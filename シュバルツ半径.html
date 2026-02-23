@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PMNT BH Auto Recorder</title>
+    <style>
+        body { margin: 0; background: black; color: white; overflow: hidden; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: monospace; }
+        canvas { background: #000; width: 1280px; height: 720px; cursor: pointer; border: 1px solid #333; }
+        #msg { position: absolute; color: #0ff; pointer-events: none; text-align: center; }
+    </style>
+</head>
+<body>
+    <div id="msg">CLICK TO RECORD (13s)</div>
+    <canvas id="cvs" width="1920" height="1080"></canvas>
+    <script>
+        const canvas = document.getElementById('cvs');
+        const ctx = canvas.getContext('2d');
+        let frame = 0, particles = [], started = false;
+
+        async function startRecording() {
+            if(started) return; started = true;
+            document.getElementById('msg').innerText = "RECORDING...";
+
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const dest = audioCtx.createMediaStreamDestination();
+            
+            // --- 音声合成 ---
+            const noise = audioCtx.createOscillator(); // 実際はノイズジェネレータが理想だが最短実装
+            const gain = audioCtx.createGain();
+            noise.type = 'sawtooth'; noise.frequency.value = 40; // ゴーー音の代用
+            noise.connect(gain); gain.connect(dest); gain.connect(audioCtx.destination);
+            gain.gain.setValueAtTime(0, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.2, audioCtx.currentTime + 10);
+            gain.gain.setValueAtTime(0, audioCtx.currentTime + 11);
+            noise.start();
+
+            const pop = audioCtx.createOscillator();
+            const popGain = audioCtx.createGain();
+            pop.connect(popGain); popGain.connect(dest); popGain.connect(audioCtx.destination);
+            popGain.gain.setValueAtTime(0, audioCtx.currentTime);
+            popGain.gain.setValueAtTime(0.8, audioCtx.currentTime + 11);
+            popGain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 11.5);
+            pop.start();
+
+            // --- 録画ポート接続 ---
+            const stream = canvas.captureStream(60);
+            stream.addTrack(dest.stream.getAudioTracks()[0]);
+            const recorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp9' });
+            const chunks = [];
+            recorder.ondataavailable = e => chunks.push(e.data);
+            recorder.onstop = () => {
+                const blob = new Blob(chunks, { type: 'video/webm' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url; a.download = 'PMNT_BH_Deadlock.webm';
+                a.click();
+                document.getElementById('msg').innerText = "SAVED TO DOWNLOADS";
+            };
+            recorder.start();
+
+            // --- 描画ループ ---
+            function draw() {
+                ctx.fillStyle = 'black'; ctx.fillRect(0, 0, 1920, 1080);
+                const time = frame / 60;
+                if (time < 3) {
+                    ctx.fillStyle = '#0ff'; ctx.font = 'bold 150px monospace'; ctx.textAlign = 'center';
+                    ctx.fillText('NCRU', 960, 540);
+                } else if (time < 11) {
+                    ctx.beginPath(); ctx.arc(960, 540, 150, 0, Math.PI*2); ctx.fill();
+                    if (frame % 2 === 0) particles.push({x: Math.random()*1920, y: Math.random()*1080});
+                    particles.forEach(p => {
+                        let dx = 960 - p.x, dy = 540 - p.y, d = Math.sqrt(dx*dx+dy*dy);
+                        if(d > 155) { p.x += dx/d * 10; p.y += dy/d * 10; }
+                        ctx.fillStyle = 'red'; ctx.fillRect(p.x, p.y, 4, 4);
+                    });
+                } else {
+                    ctx.fillStyle = 'white'; ctx.font = '80px serif'; ctx.textAlign = 'center';
+                    ctx.fillText('PMNT Conclusion: Universe is an OS.', 960, 540);
+                }
+                if (time < 13) { frame++; requestAnimationFrame(draw); } else { recorder.stop(); }
+            }
+            draw();
+        }
+        canvas.addEventListener('mousedown', startRecording);
+    </script>
+</body>
+</html>
