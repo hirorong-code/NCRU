@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>NCRU Dynamics - PMNT Rev.1.12</title>
+    <style>
+        body { background: #050508; color: #00ffcc; font-family: 'Courier New', monospace; margin: 0; overflow: hidden; }
+        .ui-overlay { position: absolute; top: 20px; left: 20px; background: rgba(10, 10, 15, 0.8); padding: 20px; border-left: 3px solid #ff4d4d; pointer-events: none; border-radius: 0 10px 10px 0; }
+        canvas { display: block; }
+        span.math { color: #ff99ff; font-weight: bold; }
+        .version { font-size: 0.8em; color: #666; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="ui-overlay">
+    <h2>NCRU Dynamics: 演算動態写像</h2>
+    <p>情報パルスが重力源（高負荷領域）を通過する際の挙動：</p>
+    <ul>
+        <li>1. 演算遅延: <span class="math">Δτ_eff ∝ exp(2Φ)</span></li>
+        <li>2. 赤方偏移: 処理スループット低下による速度低下</li>
+        <li>3. 最小負荷原理: 記述コスト <span class="math">δI=0</span> への収束</li>
+    </ul>
+    <div class="version">Theory: PMNT Rev.1.12 / Implementation: NCRU-OS v1.0</div>
+</div>
+
+<canvas id="world"></canvas>
+
+<script>
+const canvas = document.getElementById('world');
+const ctx = canvas.getContext('2d');
+let width, height, nodes = [], pulses = [];
+const NCRU_SPACING = 40;
+
+function init() {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+    nodes = [];
+    const centerX = width / 2, centerY = height / 2;
+    for (let x = 0; x < width; x += NCRU_SPACING) {
+        for (let y = 0; y < height; y += NCRU_SPACING) {
+            let dx = x - centerX, dy = y - centerY;
+            let dist = Math.sqrt(dx*dx + dy*dy);
+            let phi = 1500 / (dist + 60);
+            nodes.push({ x, y, phi });
+        }
+    }
+}
+
+function createPulse() {
+    pulses.push({ x: 0, y: height * (0.3 + Math.random() * 0.4), speed: 5, history: [] });
+}
+
+function update() {
+    pulses.forEach((p, idx) => {
+        let dx = p.x - width/2, dy = p.y - height/2;
+        let dist = Math.sqrt(dx*dx + dy*dy);
+        let phi = 1500 / (dist + 60);
+        let localClock = Math.exp(-1.5 * (phi / 20)); 
+        p.x += p.speed * localClock;
+        p.history.push({x: p.x, y: p.y, clock: localClock});
+        if (p.history.length > 40) p.history.shift();
+        if (p.x > width) pulses.splice(idx, 1);
+    });
+    if (Math.random() > 0.96) createPulse();
+}
+
+function draw() {
+    ctx.fillStyle = "rgba(5, 5, 8, 0.3)";
+    ctx.fillRect(0, 0, width, height);
+    nodes.forEach(n => {
+        ctx.fillStyle = n.phi > 10 ? `rgba(255, 77, 77, ${0.1 + n.phi/60})` : `rgba(0, 255, 204, 0.15)`;
+        ctx.beginPath(); ctx.arc(n.x, n.y, 1.2, 0, Math.PI * 2); ctx.fill();
+    });
+    pulses.forEach(p => {
+        ctx.beginPath();
+        p.history.forEach((h, i) => {
+            ctx.strokeStyle = `rgba(255, 255, 255, ${i/40})`;
+            ctx.lineWidth = h.clock * 4;
+            ctx.lineTo(h.x, h.y);
+        });
+        ctx.stroke();
+    });
+    requestAnimationFrame(() => { update(); draw(); });
+}
+
+window.addEventListener('resize', init);
+init(); draw();
+</script>
+</body>
+</html>
