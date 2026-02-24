@@ -1,0 +1,39 @@
+# Redefining Emergent Spacetime and Hawking Radiation in Computational Resource Networks
+**Phase Mapping Network Theory (PMNT) Rev. 1.17**
+
+## 1. Introduction: Limits of the Geometric Paradigm
+The continuous spacetime manifold in modern physics is merely a mathematical model for describing events. This paper treats the universe not as an object of "description" but of "execution," presenting a mathematical mechanism where spacetime and gravity emerge from a network of **Narrowest Computational Resource Units (NCRUs)**—dimensionless computational bases.
+
+## 2. Fundamental Axioms
+This theory constructs Computational Gravity based on the following three axioms:
+
+* **Axiom 1 (Dimensionless Computational Basis)**: NCRUs have no physical dimensions. Energy, time, and space are physical quantities that emerge secondarily from the state updates and resource consumption of NCRUs.
+* **Axiom 2 (Principle of Description Cost Minimization)**: All network state transitions minimize the Description Cost functional $\mathcal{I}[\mathcal{S}]$. Here, $\mathcal{I}$ is defined as the **"Minimal Description Step Count"** (algorithmic information) required to describe the state of each node.
+* **Axiom 3 (No-Erasure Axiom)**: No state of an NCRU is ever completely erased during a computational step, maintaining a steady-state driving clock $f_{\min} > 0$.
+
+## 3. Computational Task Tensor $\mathcal{K}_{\mu\nu}$ and Emergent Metrics
+To avoid confusion with General Relativity (GR), we introduce a new symbol representing the substance of computational load.
+
+* **Definition (Computational Task Tensor)**:
+    $$\mathcal{K}_{\mu\nu} \equiv \frac{\delta \mathcal{I}}{\delta g^{\mu\nu}}$$
+    $\mathcal{K}_{\mu\nu}$ represents the "density of computational instructions" assigned per NCRU.
+* **Throughput Function and $g_{00}$**:
+    The temporal component of the metric is defined as the latency caused by the local computational load $\mathcal{K}_{\mu\nu}$.
+    $$g_{00} \equiv \exp\left(-\alpha \frac{\mathcal{K}_{\mu\nu} U^\mu U^\nu}{R_{\max}}\right)$$
+    In the macroscopic low-load limit, $\mathcal{K}_{\mu\nu} \to \chi T_{\mu\nu}$, fully recovering GR as an effective theory.
+
+## 4. Hawking Radiation: Deterministic Packet Export and Information Conservation
+Hawking radiation is redefined as a "Garbage Collection" process at the event horizon.
+
+* **Physical Mechanism**: Upon computational saturation at the horizon ($\mathcal{K}_{\mu\nu} \to R_{\max}$), Axiom 3 prohibits the cessation of computation, forcing excess description costs to be exported externally as "information packets."
+* **Information Retrievability**: Since this radiation is a deterministic packet transfer, internal information is **"theoretically retrievable"** by analyzing the high-order correlations (attention structures) between radiation packets.
+
+## 5. Observational Divergence and Reasons for Current Non-Detection
+| Observational Target | PMNT Rev. 1.17 Prediction | Reason for Non-Detection |
+| :--- | :--- | :--- |
+| **High-Energy Photon Delay** | Frequency-dependent hop latency | Delay $\Delta t$ is near Planck time, below current resolution. |
+| **Gravitational Wave Discreteness** | High-frequency noise from packetization | Awaiting sensitivity gains from next-gen interferometers (e.g., LISA). |
+| **Discrete Time Steps** | Discontinuity in $d\tau$ (Self-Updates) | Minimal update step far exceeds the sampling frequency of optical lattice clocks. |
+
+## 6. Conclusion
+Physical laws are resource management protocols within the finite-resource computer known as the universe. The singularity problem is replaced by a computational resource saturation problem, returning physics from "geometric description" to "substantive computation."
