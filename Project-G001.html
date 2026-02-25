@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PMNT Rev.1.9 : Final Visualization</title>
+    <style>
+        body { background: #0d1117; color: #c9d1d9; font-family: 'Courier New', monospace; display: flex; flex-direction: column; align-items: center; padding: 40px; }
+        .card { background: #161b22; padding: 30px; border-radius: 12px; border: 1px solid #30363d; box-shadow: 0 20px 50px rgba(0,0,0,0.6); }
+        h1 { color: #58a6ff; text-align: center; border-bottom: 1px solid #30363d; padding-bottom: 15px; letter-spacing: 2px; }
+        svg { background: #000; border-radius: 8px; margin-top: 20px; }
+        .axis-label { fill: #8b949e; font-size: 14px; font-weight: bold; }
+        .legacy-line { stroke: #ff4d4d; stroke-width: 5; fill: none; filter: drop-shadow(0 0 8px #ff4d4d); }
+        .genesis-line { stroke: #00ff88; stroke-width: 5; fill: none; filter: drop-shadow(0 0 8px #00ff88); }
+        .wall-line { stroke: #ff4d4d; stroke-width: 2; stroke-dasharray: 8,8; }
+        .text-legacy { fill: #ff4d4d; font-size: 16px; font-weight: bold; }
+        .text-genesis { fill: #00ff88; font-size: 16px; font-weight: bold; }
+        .legend { margin-top: 30px; display: flex; justify-content: space-around; background: #0d1117; padding: 15px; border-radius: 8px; border: 1px solid #30363d; }
+        .legend-item { display: flex; align-items: center; gap: 10px; font-size: 14px; }
+        .box { width: 15px; height: 15px; border-radius: 3px; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>PMNT REV.1.9 : GENESIS TRIUMPH</h1>
+    
+    <svg width="850" height="500" viewBox="0 0 850 500">
+        <line x1="80" y1="420" x2="800" y2="420" stroke="#8b949e" stroke-width="2" />
+        <line x1="80" y1="50" x2="80" y2="420" stroke="#8b949e" stroke-width="2" />
+        
+        <rect x="650" y="50" width="150" height="370" fill="url(#redGradient)" fill-opacity="0.3" />
+        <defs>
+            <linearGradient id="redGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:#ff4d4d; stop-opacity:0" />
+                <stop offset="100%" style="stop-color:#ff4d4d; stop-opacity:0.8" />
+            </linearGradient>
+        </defs>
+        <text x="795" y="45" text-anchor="end" fill="#ff4d4d" font-size="12px" font-weight="bold">CRITICAL REGION (LOGIC HALT)</text>
+
+        <text x="440" y="470" text-anchor="middle" class="axis-label">COMPUTATIONAL DIMENSION (Q)</text>
+        <text x="30" y="235" text-anchor="middle" class="axis-label" transform="rotate(-90, 30, 235)">CAUSAL DIVERGENCE (ΓP)</text>
+
+        <line x1="80" y1="100" x2="800" y2="100" class="wall-line" />
+        <text x="800" y="90" text-anchor="end" fill="#ff4d4d" font-weight="bold">THE PMNT WALL (ΓP = 1.0)</text>
+
+        <path d="M 80 410 C 250 400, 450 300, 650 105" class="legacy-line" />
+        <text x="280" y="280" class="text-legacy" transform="rotate(-35, 280, 280)">LEGACY: Exponential Collapse</text>
+
+        <path d="M 80 415 C 300 412, 550 405, 780 390" class="genesis-line" />
+        <text x="450" y="375" class="text-genesis">GENESIS: Geometric Stability (4.25eV)</text>
+
+        <circle cx="650" cy="105" r="8" fill="#fff" />
+        <text x="650" y="85" text-anchor="middle" fill="#fff" font-size="12px" font-weight="bold">SYSTEM HALT</text>
+    </svg>
+
+    <div class="legend">
+        <div class="legend-item"><div class="box" style="background:#ff4d4d;"></div> LEGACY (Active Gate)</div>
+        <div class="legend-item"><div class="box" style="background:#00ff88;"></div> PMNT-OQC (Passive Shield)</div>
+        <div class="legend-item"><div class="box" style="background:rgba(255, 77, 77, 0.3); border:1px solid #ff4d4d;"></div> CRITICAL REGION</div>
+    </div>
+</div>
+
+<p style="color: #444; margin-top: 20px;">// PMNT FINAL VERIFICATION DATA // THE WALL IS RECLAIMED //</p>
+
+</body>
+</html>
