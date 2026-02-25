@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PMNT Project-G: Genesis Simulator</title>
+    <style>
+        body { background: #080a0f; color: #c9d1d9; font-family: 'Courier New', Courier, monospace; display: flex; flex-direction: column; align-items: center; padding: 20px; overflow-x: hidden; }
+        .controls { background: #11141a; padding: 25px; border-radius: 12px; border: 1px solid #238636; margin-bottom: 20px; width: 850px; display: flex; justify-content: space-around; align-items: center; box-shadow: 0 4px 20px rgba(35, 134, 54, 0.2); }
+        canvas { background: #000; border: 1px solid #30363d; border-radius: 8px; box-shadow: 0 0 40px rgba(0,0,0,0.8); }
+        .stats { margin-top: 20px; font-size: 1.6em; color: #58a6ff; background: #11141a; padding: 15px 40px; border-radius: 8px; border: 1px solid #30363d; min-width: 600px; text-align: center; }
+        .danger { color: #ff4d4d !important; text-shadow: 0 0 15px #ff4d4d; }
+        .safe { color: #00ff88 !important; text-shadow: 0 0 15px #00ff88; }
+        select { background: #0d1117; color: #00ff88; border: 1px solid #238636; padding: 8px; border-radius: 4px; font-family: inherit; font-weight: bold; cursor: pointer; }
+        h1 { letter-spacing: 5px; color: #c9d1d9; border-bottom: 2px solid #58a6ff; padding-bottom: 10px; margin-bottom: 30px; }
+        button { background: #238636; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-family: inherit; font-weight: bold; transition: 0.3s; }
+        button:hover { background: #2ea043; box-shadow: 0 0 10px #2ea043; }
+    </style>
+</head>
+<body>
+
+<h1>PMNT PROJECT-G : GENESIS</h1>
+
+<div class="controls">
+    <div>
+        <label style="color: #8b949e;">SYSTEM ARCHITECTURE: </label>
+        <select id="mode" onchange="resetSim()">
+            <option value="legacy">LEGACY (ACTIVE GATE / IBM)</option>
+            <option value="genesis">PMNT-OQC (GENESIS / 4.25eV)</option>
+        </select>
+    </div>
+    <div id="status">STATUS: <span class="safe">SYSTEM_READY</span></div>
+    <button onclick="resetSim()">RESET CORE</button>
+</div>
+
+<canvas id="simCanvas" width="900" height="500"></canvas>
+
+<div class="stats" id="statsDisplay">
+    DIMENSION (Q): <span id="qCount">0</span> | DIVERGENCE (&Gamma;P): <span id="friction">0.0000</span>
+</div>
+
+<script>
+    const canvas = document.getElementById('simCanvas');
+    const ctx = canvas.getContext('2d');
+    let qubits, friction, time, running, history, animationId;
+
+    function resetSim() {
+        qubits = 0; friction = 0; time = 0; history = []; running = true;
+        document.getElementById('status').innerHTML = "STATUS: <span class='safe'>RUNNING</span>";
+        document.getElementById('friction').classList.remove('danger');
+        if (animationId) cancelAnimationFrame(animationId);
+        draw();
+    }
+
+    function draw() {
+        if(!running) return;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const mode = document.getElementById('mode').value;
+
+        // --- PMNT CORE LOGIC ---
+        time += 1;
+        qubits += 1.8; 
+
+        if (mode === 'legacy') {
+            friction = (Math.pow(1.008, qubits) - 1) * (time * 0.0012);
+        } else {
+            friction = Math.log(1 + qubits * 0.04) * 0.025;
+        }
+
+        history.push({x: qubits, y: friction});
+
+        // --- DRAW AXIS & LABELS ---
+        ctx.strokeStyle = '#30363d';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(80, 50); ctx.lineTo(80, 420); ctx.lineTo(850, 420);
+        ctx.stroke();
+
+        ctx.fillStyle = "#8b949e";
+        ctx.font = "bold 13px 'Courier New'";
+        
+        // X-Axis: Computational Dimension
+        ctx.fillText("COMPUTATIONAL DIMENSION (Q)", 420, 460);
+        
+        // Y-Axis: Causal Divergence
+        ctx.save();
+        ctx.translate(30, 235);
+        ctx.rotate(-Math.PI / 2);
+        ctx.textAlign = "center";
+        ctx.fillText("CAUSAL DIVERGENCE (ΓP)", 0, 0);
+        ctx.restore();
+
+        // --- PMNT WALL LINE ---
+        ctx.setLineDash([5, 10]);
+        ctx.strokeStyle = '#4d1a1a';
+        ctx.beginPath();
+        ctx.moveTo(80, 80); ctx.lineTo(850, 80); 
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = '#ff4d4d';
+        ctx.fillText("CRITICAL LIMIT: PMNT_WALL (Γp = 1.0)", 600, 70);
+
+        // --- RENDER GEODESIC PATH ---
+        ctx.strokeStyle = mode === 'legacy' ? '#ff4d4d' : '#00ff88';
+        ctx.lineWidth = 4;
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = ctx.strokeStyle;
+        ctx.beginPath();
+        ctx.moveTo(80, 420);
+        
+        for(let i=0; i<history.length; i++) {
+            let p = history[i];
+            let xPos = 80 + (p.x * 0.6);
+            let yPos = 420 - (p.y * 340);
+            if(xPos < 880) ctx.lineTo(xPos, yPos);
+        }
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+
+        // --- UI DATA UPDATE ---
+        document.getElementById('qCount').innerText = Math.floor(qubits);
+        document.getElementById('friction').innerText = friction.toFixed(4);
+
+        // --- HALT CONDITION ---
+        if (friction >= 1.0) {
+            running = false;
+            document.getElementById('status').innerHTML = "STATUS: <span class='danger'>LOGIC_HALT: PMNT_WALL_COLLAPSE</span>";
+            document.getElementById('friction').classList.add('danger');
+        }
+
+        animationId = requestAnimationFrame(draw);
+    }
+
+    resetSim();
+</script>
+
+<div style="width: 850px; font-size: 0.85em; color: #444; margin-top: 30px; border-top: 1px solid #111; padding-top: 10px;">
+    // PMNT REV.1.9 FORMAL VERIFICATION SYSTEM // 4.25eV SHIELDING ACTIVE //
+</div>
+
+</body>
+</html>
