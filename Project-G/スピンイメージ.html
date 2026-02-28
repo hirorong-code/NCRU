@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>PMNT Rev.1.4 NV-Center Physical Model (Final Sync)</title>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { background-color: #050505; color: #00ffcc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        .container { border: 2px solid #00ffcc; padding: 30px; border-radius: 12px; background: linear-gradient(145deg, #0a0a0a, #111); box-shadow: 0 0 30px rgba(0, 255, 204, 0.15); max-width: 1100px; width: 95%; }
+        h1 { border-left: 5px solid #ff00ff; padding-left: 15px; text-align: left; font-size: 1.8rem; letter-spacing: 2px; margin-bottom: 5px; }
+        .tag { background: #00ffcc; color: #000; padding: 3px 10px; font-weight: bold; font-size: 0.75rem; border-radius: 4px; display: inline-block; }
+        .formula-box { background: rgba(255, 255, 255, 0.03); padding: 20px; border-radius: 8px; margin: 25px 0; border: 1px solid #333; text-align: center; font-size: 1.3rem; }
+        .model-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; margin-top: 30px; }
+        .diagram-section { background: rgba(0, 0, 0, 0.5); padding: 20px; border-radius: 8px; border: 1px solid #222; }
+        .label { font-weight: bold; color: #ff00ff; text-transform: uppercase; font-size: 0.95rem; display: block; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 5px; }
+        .description { font-size: 0.9rem; line-height: 1.7; color: #aaa; margin-top: 15px; }
+        .separation-context { margin-top: 15px; background: rgba(0, 255, 204, 0.03); padding: 10px; border-radius: 4px; border-left: 3px solid #00ffcc; }
+        .port-wiring-section { margin-top: 40px; border-top: 1px solid #333; padding-top: 25px; }
+        svg { width: 100%; height: auto; background: transparent; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="tag">PMNT PHYSICAL ARCHITECTURE Rev.1.4</div>
+    <h1>NV-Center: Node, Structure & Zeeman Splitting (Synchronized)</h1>
+
+    <div class="formula-box">
+        $$ \hat{H} = h D \hat{S}_z^2 + g \mu_B \mathbf{B} \cdot \hat{\mathbf{S}} $$
+        <div style="font-size: 0.85rem; color: #888; margin-top: 10px;">
+            Zeeman Energy Shift: \( \Delta E = g \mu_B m_s B \)
+        </div>
+    </div>
+
+    <div class="model-grid">
+        <div class="diagram-section">
+            <span class="label">【A】Atomic Configuration (Enhanced Lattice Structure)</span>
+            <svg viewBox="0 0 300 260">
+                <defs>
+                    <radialGradient id="gradN" cx="50%" cy="50%" r="50%">
+                        <stop offset="10%" style="stop-color:#ff66ff;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#aa00aa;stop-opacity:1" />
+                    </radialGradient>
+                    <radialGradient id="gradC" cx="30%" cy="30%" r="50%">
+                        <stop offset="0%" style="stop-color:#999;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#333;stop-opacity:1" />
+                    </radialGradient>
+                    <filter id="glow">
+                        <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+                        <feMerge>
+                            <feMergeNode in="coloredBlur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                </defs>
+                
+                <line x1="150" y1="60" x2="150" y2="120" stroke="#555" stroke-width="2" />
+                <line x1="150" y1="120" x2="90" y2="170" stroke="#555" stroke-width="2" />
+                <line x1="150" y1="120" x2="210" y2="170" stroke="#555" stroke-width="2" />
+                
+                <line x1="90" y1="170" x2="60" y2="230" stroke="#444" stroke-width="1.5" stroke-dasharray="3,2" />
+                <line x1="90" y1="170" x2="120" y2="230" stroke="#444" stroke-width="1.5" stroke-dasharray="3,2" />
+                <line x1="210" y1="170" x2="180" y2="230" stroke="#444" stroke-width="1.5" stroke-dasharray="3,2" />
+                <line x1="210" y1="170" x2="240" y2="230" stroke="#444" stroke-width="1.5" stroke-dasharray="3,2" />
+                
+                <line x1="150" y1="120" x2="150" y2="170" stroke="#00ffcc" stroke-width="5" stroke-dasharray="3,3" filter="url(#glow)" />
+
+                <circle cx="60" cy="230" r="8" fill="url(#gradC)" stroke="#111" />
+                <circle cx="120" cy="230" r="8" fill="url(#gradC)" stroke="#111" />
+                <circle cx="180" cy="230" r="8" fill="url(#gradC)" stroke="#111" />
+                <circle cx="240" cy="230" r="8" fill="url(#gradC)" stroke="#111" />
+
+                <circle cx="150" cy="60" r="11" fill="url(#gradC)" stroke="#111" />
+                <circle cx="90" cy="170" r="11" fill="url(#gradC)" stroke="#111" />
+                <circle cx="210" cy="170" r="11" fill="url(#gradC)" stroke="#111" />
+                
+                <text x="145" y="52" fill="#aaa" font-size="12">C</text>
+                <text x="80" y="165" fill="#aaa" font-size="12">C</text>
+                <text x="215" y="165" fill="#aaa" font-size="12">C</text>
+                
+                <circle cx="150" cy="120" r="14" fill="url(#gradN)" stroke="#fff" stroke-width="1.5" />
+                <text x="143" y="127" fill="#000" font-size="16" font-weight="bold">N</text>
+                
+                <circle cx="150" cy="170" r="14" fill="none" stroke="#00ffcc" stroke-width="2.5" stroke-dasharray="6,4" filter="url(#glow)" />
+                <text x="143" y="177" fill="#00ffcc" font-size="16" font-weight="bold">V</text>
+                
+                <line x1="150" y1="30" x2="150" y2="210" stroke="#ff00ff" stroke-width="1" stroke-dasharray="10,10" opacity="0.4" />
+            </svg>
+            <div class="description">
+                ダイヤモンド格子の強力な <strong>\(sp^3\) 結合</strong>（C原子を明瞭化）内に形成された <strong>N-V Pair</strong>。周辺を強固なC-C結合ネットが取り囲むことで、格子の対称軸（C3v軸）に沿った\(S=1\)の電子スピンが熱振動から完璧に物理隔離されている。
+            </div>
+        </div>
+
+        <div class="diagram-section">
+            <span class="label">【B】Zeeman Splitting Control Logic</span>
+            <svg viewBox="0 0 240 200">
+                <defs>
+                    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+                        <path d="M0,0 L0,10 L8,5 Z" fill="#ff0000" />
+                    </marker>
+                </defs>
+                <line x1="20" y1="180" x2="20" y2="20" stroke="#666" stroke-width="1" marker-end="url(#arrow)" />
+                <text x="5" y="15" fill="#aaa" font-size="10">Energy</text>
+
+                <text x="40" y="190" fill="#ccc" font-size="11">\( B=0 \)</text>
+                <line x1="40" y1="70" x2="90" y2="70" stroke="#fff" stroke-width="2.5" />
+                <line x1="40" y1="160" x2="90" y2="160" stroke="#fff" stroke-width="2.5" />
+                <text x="95" y="74" fill="#ccc" font-size="10">\( m_s=\pm1 \)</text>
+                <text x="95" y="164" fill="#ccc" font-size="10">\( m_s=0 \)</text>
+
+                <text x="160" y="190" fill="#00ffcc" font-size="11">\( B>0 \)</text>
+                <path d="M 90 70 L 150 40" fill="none" stroke="#ff00ff" stroke-width="1" stroke-dasharray="3,2" />
+                <path d="M 90 70 L 150 100" fill="none" stroke="#ff00ff" stroke-width="1" stroke-dasharray="3,2" />
+                <line x1="90" y1="160" x2="150" y2="160" stroke="#aaa" stroke-width="1" stroke-dasharray="3,2" />
+                
+                <line x1="150" y1="40" x2="210" y2="40" stroke="#00ffcc" stroke-width="2.5" /> <line x1="150" y1="100" x2="210" y2="100" stroke="#00ffcc" stroke-width="2.5" /> <line x1="150" y1="160" x2="210" y2="160" stroke="#fff" stroke-width="1.5" /> <text x="215" y="44" fill="#00ffcc" font-size="10">\( m_s=+1 \)</text>
+                <text x="215" y="104" fill="#00ffcc" font-size="10">\( m_s=-1 \)</text>
+                
+                <line x1="180" y1="40" x2="180" y2="100" stroke="#ff00ff" stroke-width="1" stroke-dasharray="4,2" />
+                <text x="185" y="73" fill="#ff00ff" font-size="9">\(\Delta E\)</text>
+            </svg>
+            <div class="description">
+                磁場 \(B\) の印加により、縮退していた状態 \(m_s = \pm 1\) が分離する。これにより各状態の固有エネルギーが「固定（ピン留め）」され、環境ノイズとの共鳴遷移 \(P_{i \to f}\) が物理的に禁止される。
+                
+                <div class="separation-context">
+                    <span style="color: #00ffcc; font-weight: bold;">[分離状態に関する分析]:</span> 図中に示す通り、磁場 \(B\) が \(B > 0\) となると、ハミルトニアンのゼーマン項により、それまで同一のエネルギーを持っていた \(m_{s} = +1\) 状態（エネルギーが上昇）と \(m_{s} = -1\) 状態（エネルギーが低下）のエネルギー準位が明確に分離する。この分離（\(\Delta E\)）により、各量子状態のエネルギー的な独立性が確保され、低周波の外部ノイズが引き起こす意図しない状態遷移が物理的に遮断（デカップリング）される。
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="port-wiring-section">
+        <span class="label" style="color: #00ffcc;">Port Wiring (TD Result: Physical Analysis)</span>
+        <ul style="color: #ccc; font-size: 0.9rem; line-height: 1.8;">
+            <li><strong>Port [N-V]:</strong> 演算リソース（ノード）の最小単位。状態保持と演算実行の局所点。</li>
+            <li><strong>Port [C-Bonding]:</strong> 周辺炭素結合。熱振動からノードを機械的・熱的に隔離するアイソレータ。</li>
+            <li><strong>Port [Magnetic Field]:</strong> 外部磁場入力。ゼーマン分裂のスイッチであり、ノイズ・デカップリングの制御軸。</li>
+        </ul>
+    </div>
+</div>
+
+</body>
+</html>
