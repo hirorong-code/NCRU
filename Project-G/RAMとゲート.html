@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>PMNT Rev.1.8: RAM & Gate Design</title>
+    <style>
+        body { background-color: #050505; color: #00ffcc; font-family: 'Segoe UI', sans-serif; padding: 20px; }
+        .container { border: 2px solid #ff00ff; padding: 25px; border-radius: 10px; background: #0a0a0a; max-width: 900px; }
+        .logic-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+        .module { border: 1px solid #333; padding: 15px; border-radius: 8px; background: rgba(255,0,255,0.05); }
+        .label { color: #ff00ff; font-weight: bold; font-size: 0.9rem; border-bottom: 1px solid #333; margin-bottom: 10px; display: block; }
+        svg { width: 100%; height: auto; }
+        .math { font-family: 'Courier New', monospace; color: #fff; font-size: 0.8rem; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div style="color: #ff00ff; font-weight: bold;">[LOGIC DESIGN: 500K / 3T]</div>
+    <h2 style="margin: 10px 0;">RAM & Gate Topology Matrix</h2>
+
+    <div class="logic-grid">
+        <div class="module">
+            <span class="label">RAM / CALCULATION (d < 20nm)</span>
+            <svg viewBox="0 0 200 100">
+                <circle cx="70" cy="50" r="10" fill="#00ffcc" />
+                <circle cx="130" cy="50" r="10" fill="#00ffcc" />
+                <path d="M 85 50 Q 100 30 115 50 T 130 50" fill="none" stroke="#ff00ff" stroke-width="2">
+                    <animate attributeName="stroke-dasharray" values="0,100; 100,0" dur="0.5s" repeatCount="indefinite" />
+                </path>
+                <text x="75" y="85" fill="#fff" font-size="10">Strong Coupling</text>
+            </svg>
+            <div class="math">H_int ∝ 1/r³ >> Noise</div>
+        </div>
+
+        <div class="module" style="border-color: #00ffcc;">
+            <span class="label" style="color: #00ffcc;">GATE / SWITCH (d ≈ 30nm)</span>
+            <svg viewBox="0 0 200 100">
+                <circle cx="60" cy="50" r="10" fill="#00ffcc" />
+                <circle cx="140" cy="50" r="10" fill="#00ffcc" />
+                <line x1="80" y1="50" x2="120" y2="50" stroke="#444" stroke-width="1" stroke-dasharray="4,4" />
+                <rect x="95" y="35" width="10" height="30" fill="#ff00ff" opacity="0.6">
+                    <animate attributeName="opacity" values="0.2; 1; 0.2" dur="1.5s" repeatCount="indefinite" />
+                </rect>
+            </svg>
+            <div class="math">P(transfer) = f(External Ctrl)</div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

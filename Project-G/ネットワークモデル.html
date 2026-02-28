@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>PMNT Rev.1.7: Tetrahedral C4-NV Unit</title>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { background-color: #050505; color: #00ffcc; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        .container { border: 2px solid #00ffcc; padding: 30px; border-radius: 12px; background: #0a0a0a; box-shadow: 0 0 50px rgba(0, 255, 204, 0.2); max-width: 1100px; width: 95%; }
+        h1 { border-left: 5px solid #ff00ff; padding-left: 15px; font-size: 1.4rem; color: #fff; text-transform: uppercase; margin-bottom: 25px; }
+        .grid-layout { display: grid; grid-template-columns: 1.2fr 1fr; gap: 30px; }
+        .diagram-box { background: radial-gradient(circle at center, #111 0%, #000 100%); border: 1px solid #333; border-radius: 8px; padding: 20px; position: relative; }
+        .data-panel { background: rgba(255, 255, 255, 0.03); padding: 20px; border-radius: 8px; border-left: 4px solid #ff00ff; }
+        .port-label { font-weight: bold; color: #ff00ff; font-size: 0.8rem; margin-bottom: 5px; display: block; }
+        svg { width: 100%; height: auto; }
+        .highlight { color: #fff; font-weight: bold; background: rgba(0, 255, 204, 0.2); padding: 0 4px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>PMNT Unit: Tetrahedral Geometric Constraint (C4-NV)</h1>
+    
+    <div class="grid-layout">
+        <div class="diagram-section">
+            <div class="diagram-box">
+                <svg viewBox="0 0 400 400">
+                    <line x1="200" y1="20" x2="200" y2="380" stroke="#ff00ff" stroke-width="2" stroke-dasharray="10,5" opacity="0.6" />
+                    <text x="210" y="40" fill="#ff00ff" font-size="12" font-weight="bold">3T Magnetic Axis [C3v]</text>
+
+                    <g stroke="#444" stroke-width="2">
+                        <line x1="200" y1="80" x2="200" y2="200" />
+                        <line x1="100" y1="300" x2="200" y2="200" />
+                        <line x1="250" y1="330" x2="200" y2="200" />
+                        <line x1="330" y1="280" x2="200" y2="200" />
+                    </g>
+
+                    <circle cx="200" cy="80" r="10" fill="#666" />
+                    <text x="192" y="70" fill="#aaa" font-size="10">C1 (Top)</text>
+                    
+                    <circle cx="100" cy="300" r="10" fill="#444" />
+                    <circle cx="250" cy="330" r="10" fill="#444" />
+                    <circle cx="330" cy="280" r="10" fill="#444" />
+                    <text x="80" y="325" fill="#666" font-size="9">C2 (Base)</text>
+                    <text x="240" y="355" fill="#666" font-size="9">C3 (Base)</text>
+                    <text x="320" y="305" fill="#666" font-size="9">C4 (Base)</text>
+
+                    <g id="nv-node">
+                        <circle cx="200" cy="200" r="15" fill="#00ffcc" opacity="0.2">
+                            <animate attributeName="r" values="14;16;14" dur="0.1s" repeatCount="indefinite" />
+                        </circle>
+                        <circle cx="200" cy="200" r="12" fill="#00ffcc" />
+                        <text x="185" y="235" fill="#00ffcc" font-weight="bold" font-size="12">NV Node</text>
+                    </g>
+
+                    <g stroke="#ff6600" stroke-width="1" opacity="0.4">
+                        <path d="M180 200 Q 190 190 200 200 T 220 200" fill="none">
+                            <animateTransform attributeName="transform" type="translate" values="-2,-2; 2,2; -2,-2" dur="0.05s" repeatCount="indefinite" />
+                        </path>
+                    </g>
+                </svg>
+            </div>
+        </div>
+
+        <div class="data-panel">
+            <span class="port-label">【PORT 1】TOP (C3v-SYNC)</span>
+            <p style="font-size: 0.85rem; margin-bottom: 15px;">
+                3T磁力線への<span class="highlight">位相同期パス</span>。C1原子が磁気ベクトルの軸受として機能し、スピンの歳差運動を磁場軸に固定。
+            </p>
+
+            <span class="port-label">【PORT 2-4】BASE (THERMAL DAMPING)</span>
+            <p style="font-size: 0.85rem; margin-bottom: 15px;">
+                C2, C3, C4による<span class="highlight">3点支持バッファ</span>。500Kの熱振動エネルギーを等方的に分散。IDRの分母 $\eta_{noise}$ を最小化する幾何学的必然性。
+            </p>
+
+            <div style="border-top: 1px solid #333; padding-top: 15px; font-size: 0.8rem; color: #888;">
+                <strong>分析結果（TD）:</strong><br>
+                1〜3点支持では熱振動により軸がドリフトし、ゼーマン分裂 $\Delta E$ がボケる（情報消失）。4点目のC原子の存在が、3次元的な「剛性」と「情報の独立性」を確立する最小条件。
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
