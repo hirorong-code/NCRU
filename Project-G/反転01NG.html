@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>PMNT Rev.1.25: Full Hardware NOT Architecture</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+    <style>
+        body { background-color: #050505; color: #00ffcc; font-family: 'Courier New', monospace; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        .logic-frame { border: 2px solid #00ffcc; padding: 25px; background: #000; width: 1000px; box-shadow: 0 0 120px rgba(0, 255, 204, 0.2); }
+    </style>
+</head>
+<body>
+
+<div class="logic-frame">
+    <div style="border-bottom: 2px solid #ff00ff; margin-bottom: 15px; padding-bottom: 10px; display: flex; justify-content: space-between;">
+        <h1 style="margin:0; font-size:1.3rem;">C-LATTICE: COMPLETE NOT ARCHITECTURE (10nm)</h1>
+        <div style="text-align: right; color:#888; font-size:0.75rem;">Physical Implementation / sp³ Constrained</div>
+    </div>
+
+    <svg viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <pattern id="sp3Atoms" width="25" height="25" patternUnits="userSpaceOnUse">
+                <circle cx="2" cy="2" r="1.1" fill="#ffffff" opacity="0.1" />
+            </pattern>
+            <marker id="vG" viewBox="0 0 10 10" refX="5" refY="0" markerWidth="4" markerHeight="4" orient="auto">
+                <path d="M 5 0 L 10 10 L 0 10 Z" fill="#00ffcc" />
+            </marker>
+            <marker id="vP" viewBox="0 0 10 10" refX="5" refY="10" markerWidth="4" markerHeight="4" orient="auto">
+                <path d="M 5 10 L 0 0 L 10 0 Z" fill="#ff00ff" />
+            </marker>
+        </defs>
+        <rect width="1000" height="500" fill="url(#sp3Atoms)" />
+
+        <rect x="0" y="200" width="30" height="100" fill="rgba(0, 255, 204, 0.1)" stroke="#00ffcc" stroke-dasharray="2,2" />
+        <text x="5" y="190" fill="#00ffcc" font-size="10">Input Port A</text>
+
+        <circle cx="150" cy="250" r="8" fill="#fff" />
+        <text x="130" y="235" fill="#fff" font-size="11" font-weight="bold">NV-In (Splitter)</text>
+
+        <path d="M 150 250 L 450 250 L 750 250" stroke="#00ffcc" stroke-width="4" opacity="0.3" fill="none" />
+        <circle cx="450" cy="250" r="4" fill="#00ffcc" />
+        <line x1="720" y1="242" x2="740" y2="242" stroke="#00ffcc" stroke-width="4" marker-end="url(#vG)" />
+        <text x="250" y="240" fill="#00ffcc" font-size="10">Ref-Path (Φ=0)</text>
+
+        <path d="M 150 250 L 150 400 L 550 400 L 550 250 L 750 250" fill="none" stroke="#ff00ff" stroke-width="4" opacity="0.6" />
+        <circle cx="150" cy="400" r="4" fill="#ff00ff" />
+        <circle cx="550" cy="400" r="4" fill="#ff00ff" />
+        <circle cx="550" cy="250" r="4" fill="#ff00ff" />
+        <text x="300" y="420" fill="#ff00ff" font-size="11" font-weight="bold">Delay-Path: ΔL = 2nm (λ/2 Shift)</text>
+        <line x1="720" y1="258" x2="740" y2="258" stroke="#ff00ff" stroke-width="4" marker-end="url(#vP)" />
+
+        <circle cx="750" cy="250" r="15" fill="none" stroke="#00ffcc" stroke-width="2" />
+        <text x="775" y="245" fill="#00ffcc" font-weight="bold" font-size="13">NV-Out (Collision)</text>
+        
+        <line x1="850" y1="460" x2="950" y2="460" stroke="#fff" stroke-width="1.5" />
+        <text x="890" y="480" fill="#fff" font-size="10">10 nm</text>
+    </svg>
+
+    <div style="background: rgba(0,255,204,0.03); border: 1px solid #333; padding: 15px; border-radius: 10px; margin-top: 15px;">
+        <p style="color: #00ffcc; font-weight: bold; margin-bottom: 8px;">■ Architecture Logic</p>
+        <p style="font-size: 0.85rem; color: #ccc; line-height: 1.5;">
+            1. **流入**: 外部ポートから届く単一のスピン波。
+            2. **分岐**: **NV-In** が物理的にパスを二分。一方は直進、他方は **コの字型の原子鎖導波路** へ。
+            3. **位相差**: 迂回による 2.0nm の路程差が、波の「正相(↑)」を「逆相(↓)」へ物理変換。
+            4. **演算**: **NV-Out** で両波が重畳。入力があれば振幅消失(0)、なければ直進波のみで発火(1)。
+        </p>
+    </div>
+</div>
+
+</body>
+</html>

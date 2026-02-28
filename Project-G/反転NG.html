@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>PMNT Rev.1.20: NOT Gate Saturation</title>
+    <script>
+      window.MathJax = {
+        tex: { inlineMath: [['$','$'], ['\\(','\\)']] },
+        options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+      };
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js" crossorigin="anonymous"></script>
+    <style>
+        body { background-color: #050505; color: #00ffcc; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        .container { border: 2px solid #00ffcc; padding: 30px; border-radius: 15px; background: #0a0a0a; box-shadow: 0 0 150px rgba(0, 255, 204, 0.25); max-width: 1000px; width: 100%; }
+        .header { border-bottom: 2px solid #00ffcc; margin-bottom: 25px; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .tag { font-size: 0.8rem; background: #ff3366; color: #fff; padding: 2px 10px; border-radius: 4px; font-weight: bold; }
+        .viewer { background: #000; border: 1px solid #222; border-radius: 10px; height: 500px; position: relative; overflow: hidden; margin-bottom: 20px; }
+        svg { width: 100%; height: 100%; }
+        .math-section { background: rgba(0, 255, 204, 0.03); border: 1px solid #333; border-radius: 10px; padding: 30px; margin-top: 20px; }
+        .MathJax { color: #00ffcc !important; }
+        mjx-container { color: #00ffcc !important; }
+        .legend-box { margin-top: 20px; border: 1px solid #333; border-radius: 8px; padding: 16px; font-size: 0.85rem; color: #ccc; }
+        .legend-item { display: flex; align-items: center; margin-bottom: 6px; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; margin-right: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <div>
+            <h1 style="margin: 0; font-size: 1.5rem;">ATOMIC SCALE SATURATION: NOT GATE</h1>
+            <span style="font-size: 0.9rem; color: #ff3366;">Phase Cancellation: $\Delta\phi = \pi$</span>
+        </div>
+        <div class="tag">NOT LOGIC REVISED</div>
+    </div>
+
+    <div class="viewer">
+        <svg viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <pattern id="sp3Grid" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <circle cx="4"  cy="4"  r="1.5" fill="#ffffff" opacity="0.6" />
+                    <circle cx="14" cy="14" r="1.5" fill="#ffffff" opacity="0.4" />
+                    <line x1="4" y1="4" x2="14" y2="14" stroke="#ffffff" stroke-width="0.3" opacity="0.2" />
+                </pattern>
+            </defs>
+            <rect width="1000" height="500" fill="url(#sp3Grid)" />
+
+            <line x1="500" y1="50" x2="500" y2="380" stroke="#00ffcc" stroke-width="1" stroke-dasharray="4" opacity="0.4" />
+
+            <g stroke="#ff3366" stroke-width="1.8" opacity="0.9">
+                <path d="M 200 250 L 350 250 L 485 375" fill="none" />
+                <circle cx="350" cy="250" r="1.5" fill="#ff3366" />
+            </g>
+
+            <g>
+                <circle cx="200" cy="250" r="3" fill="#ff00ff" /> <circle cx="200" cy="250" r="8" fill="none" stroke="#ff00ff" stroke-width="0.5" opacity="0.5" />
+                
+                <circle cx="500" cy="380" r="5" fill="#00ffcc" /> <text x="520" y="385" fill="#00ffcc" font-size="12">Default: ON</text>
+            </g>
+
+            <line x1="850" y1="460" x2="950" y2="460" stroke="#fff" stroke-width="1.5" />
+            <text x="885" y="480" fill="#fff" font-size="10">≈ 10 nm</text>
+        </svg>
+    </div>
+
+    <div class="math-section">
+        <div style="margin-bottom: 20px;">
+            <p style="color: #00ffcc; font-weight: bold; margin-bottom: 10px;">■ NOT Gate Inversion Condition</p>
+            $$Y = \Psi_{bias} + \Psi_A e^{i\pi} \implies |Y|^2 \approx 0$$
+        </div>
+        <p style="font-size: 0.85rem; color: #888;">
+            バイアス $B$ による常時励起状態に対し、入力 $A$ が逆位相（位相差 $\pi$）で干渉することで信号を物理的に打ち消します。
+        </p>
+    </div>
+
+    <div class="legend-box">
+        <div class="legend-item"><div class="dot" style="background: #ffffff;"></div><span>白ドット：**Passive-C**（位相安定の保持、格子剛性）</span></div>
+        <div class="legend-item"><div class="dot" style="background: #ff3366;"></div><span>赤線：**Interference Path**（逆位相信号の伝達路）</span></div>
+        <div class="legend-item"><div class="dot" style="background: #00ffcc;"></div><span>シアン：**Output Y**（常時発火ノード、干渉により鎮火）</span></div>
+    </div>
+</div>
+
+</body>
+</html>
