@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>PMNT Rev.1.35: Protein Synthesis Relaxation Sim</title>
+    <style>
+        body { background-color: #050505; color: #00ffcc; font-family: 'Courier New', monospace; overflow: hidden; display: flex; flex-direction: column; align-items: center; }
+        canvas { border: 2px solid #00ffcc; background: #000; cursor: crosshair; box-shadow: 0 0 50px rgba(0, 255, 204, 0.2); }
+        .controls { padding: 20px; display: flex; gap: 20px; }
+        button { background: #000; color: #00ffcc; border: 1px solid #00ffcc; padding: 10px 20px; cursor: pointer; }
+        button:hover { background: #00ffcc; color: #000; }
+        .status { color: #ff00ff; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<h2 style="margin-top:20px;">PMNT Rev.1.35: CODON-RELAXATION SIMULATOR</h2>
+<div class="status" id="status">WAITING FOR mRNA INPUT...</div>
+
+<canvas id="simCanvas" width="800" height="500"></canvas>
+
+<div class="controls">
+    <button onclick="setCodon('A')">Input: A</button>
+    <button onclick="setCodon('U')">Input: U</button>
+    <button onclick="setCodon('G')">Input: G</button>
+    <button onclick="setCodon('C')">Input: C</button>
+    <button onclick="resetSim()">RESET LATTICE</button>
+</div>
+
+<script>
+    const canvas = document.getElementById('simCanvas');
+    const ctx = canvas.getContext('2d');
+    const status = document.getElementById('status');
+
+    // 4つのポテンシャル・ウェル（A, U, G, C）の座標
+    const wells = {
+        'A': { x: 200, y: 150, depth: 20, label: 'ADENINE (A)' },
+        'U': { x: 600, y: 150, depth: 20, label: 'URACIL (U)' },
+        'G': { x: 200, y: 350, depth: 20, label: 'GUANINE (G)' },
+        'C': { x: 600, y: 350, depth: 20, label: 'CYTOSINE (C)' }
+    };
+
+    let particles = [];
+    let targetCodon = null;
+
+    function initParticles() {
+        particles = [];
+        for(let i=0; i<30; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vx: 0, vy: 0,
+                color: '#ff00ff'
+            });
+        }
+    }
+
+    function setCodon(c) {
+        targetCodon = c;
+        // 地形の深さをリセットしてからターゲットを深くする
+        Object.keys(wells).forEach(k => wells[k].depth = 20);
+        wells[c].depth = 150; // 物理的な「深い谷」の形成
+        status.innerText = `mRNA SIGNAL: [ ${c} ] - DEFORMING ENERGY LANDSCAPE...`;
+    }
+
+    function resetSim() {
+        targetCodon = null;
+        Object.keys(wells).forEach(k => wells[k].depth = 20);
+        initParticles();
+        status.innerText = "LATTICE RESET: THERMAL EQUILIBRIUM";
+    }
+
+    function update() {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // 1. エネルギー地形（グリッド）の描画
+        ctx.strokeStyle = '#222';
+        ctx.beginPath();
+        for(let i=0; i<canvas.width; i+=40) {
+            ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height);
+        }
+        for(let j=0; j<canvas.height; j+=40) {
+            ctx.moveTo(0, j); ctx.lineTo(canvas.width, j);
+        }
+        ctx.stroke();
+
+        // 2. ウェル（井戸）の視覚化
+        Object.keys(wells).forEach(key => {
+            const w = wells[key];
+            const grad = ctx.createRadialGradient(w.x, w.y, 5, w.x, w.y, w.depth);
+            grad.addColorStop(0, targetCodon === key ? 'rgba(0, 255, 204, 0.5)' : 'rgba(255, 255, 255, 0.1)');
+            grad.addColorStop(1, 'transparent');
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.arc(w.x, w.y, w.depth, 0, Math.PI*2);
+            ctx.fill();
+            ctx.fillStyle = '#666';
+            ctx.fillText(w.label, w.x - 30, w.y + 50);
+        });
+
+        // 3. スピン粒子（tRNA）の物理演算：緩和動態
+        particles.forEach(p => {
+            // 熱揺らぎ（ノイズ）
+            p.vx += (Math.random() - 0.5) * 0.5;
+            p.vy += (Math.random() - 0.5) * 0.5;
+
+            // 勾配降下（谷へ向かう力）
+            Object.keys(wells).forEach(key => {
+                const w = wells[key];
+                const dx = w.x - p.x;
+                const dy = w.y - p.y;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                if(dist < 300) {
+                    const force = w.depth / (dist + 10);
+                    p.vx += (dx / dist) * force * 0.1;
+                    p.vy += (dy / dist) * force * 0.1;
+                }
+            });
+
+            // 粘性抵抗
+            p.vx *= 0.95;
+            p.vy *= 0.95;
+
+            p.x += p.vx;
+            p.y += p.vy;
+
+            // 描画
+            ctx.fillStyle = p.color;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 2, 0, Math.PI*2);
+            ctx.fill();
+        });
+
+        requestAnimationFrame(update);
+    }
+
+    initParticles();
+    update();
+</script>
+
+<div style="width: 800px; margin-top: 20px; font-size: 0.85rem; color: #888; line-height: 1.6;">
+    <p><strong>■ シミュレーション解説:</strong><br>
+    このシミュレータは、mRNAの入力に応じてsp³格子内の「エネルギー地形」が物理的に変容する様子を再現しています。
+    ボタン（Input）を押すと、対応する塩基のポテンシャルが深まり、熱揺らぎ（ピンクの粒子）を伴う系が、**外部からの命令なしに自発的に正解の「谷」へと緩和**していく様子が確認できます。これがPMNT Rev.1.35における「演算」の実体です。
+    </p>
+</div>
+
+</body>
+</html>
