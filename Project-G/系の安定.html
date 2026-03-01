@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>PMNT Rev.1.37: Carbon Cage & Spin Dynamics</title>
+    <style>
+        body { background-color: #020202; color: #00ffcc; font-family: 'Courier New', monospace; display: flex; flex-direction: column; align-items: center; }
+        canvas { border: 2px solid #333; background: #000; box-shadow: inset 0 0 20px #111; }
+        .param-info { width: 850px; margin-top: 15px; color: #666; font-size: 0.8rem; line-height: 1.4; border-left: 2px solid #444; padding-left: 10px; }
+    </style>
+</head>
+<body>
+
+<h2 style="margin-top:20px; color:#aaa;">PMNT Rev.1.37: sp³ CARBON GRID & NV-RELAXATION</h2>
+<canvas id="sp3Canvas" width="850" height="550"></canvas>
+
+<div class="param-info">
+    <strong>[CARBON LATTICE CONTROL]</strong><br>
+    炭素原子（C）をグレーのドットで固定。ピンクのNVセンターが磁気相互作用によって「構造の安定」を目指します。<br>
+    - <b>G_ATTRACT</b>: 引力 / <b>R_EQUILIBRIUM</b>: 安定距離 / <b>TIME_STEP</b>: 0.02 (極低速)
+</div>
+
+<script>
+    const canvas = document.getElementById('sp3Canvas');
+    const ctx = canvas.getContext('2d');
+
+    // --- 調整パラメータ (Tuning Parameters) ---
+    const NODE_COUNT = 9;
+    const G_ATTRACT = 2.0;
+    const R_EQUILIBRIUM = 150.0; // 少し広めの安定距離
+    const DAMPING = 0.94;
+    const TIME_STEP = 0.015;      // 極低速
+    const C_GRID_GAP = 50;       // 炭素格子の間隔
+    const C_SIZE = 3;            // 炭素原子の視覚サイズ
+    // ----------------------------------------
+
+    let nodes = [];
+
+    function init() {
+        for(let i=0; i<NODE_COUNT; i++) {
+            nodes.push({
+                x: canvas.width/2 + (Math.random()-0.5)*300,
+                y: canvas.height/2 + (Math.random()-0.5)*300,
+                vx: 0, vy: 0
+            });
+        }
+    }
+
+    // 炭素格子(C)の描画
+    function drawCGrid() {
+        ctx.fillStyle = "#444";
+        ctx.strokeStyle = "#222";
+        ctx.lineWidth = 1;
+        for(let x=0; x<=canvas.width; x+=C_GRID_GAP) {
+            for(let y=0; y<=canvas.height; y+=C_GRID_GAP) {
+                // 炭素原子（C）
+                ctx.beginPath();
+                ctx.arc(x, y, C_SIZE, 0, Math.PI*2);
+                ctx.fill();
+                // 格子線
+                ctx.beginPath();
+                ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(0, y); ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+        }
+    }
+
+    function update() {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.4)'; // 残像を少し残す
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        drawCGrid(); // 背景に炭素格子を固定
+
+        for(let i=0; i<nodes.length; i++) {
+            let n1 = nodes[i];
+            for(let j=i+1; j<nodes.length; j++) {
+                let n2 = nodes[j];
+                const dx = n2.x - n1.x;
+                const dy = n2.y - n1.y;
+                const dist = Math.sqrt(dx*dx + dy*dy) || 1;
+
+                // 物理拘束（ラグランジュ系における緩和ポテンシャル）
+                const force = G_ATTRACT * (1 - Math.pow(R_EQUILIBRIUM / dist, 2));
+                
+                n1.vx += (dx / dist) * force * TIME_STEP;
+                n1.vy += (dy / dist) * force * TIME_STEP;
+                n2.vx -= (dx / dist) * force * TIME_STEP;
+                n2.vy -= (dy / dist) * force * TIME_STEP;
+
+                // NVセンター間のアテンション（相関）を線で表示
+                ctx.strokeStyle = `rgba(255, 0, 255, ${Math.max(0, 0.3 - dist/500)})`;
+                ctx.beginPath();
+                ctx.moveTo(n1.x, n1.y);
+                ctx.lineTo(n2.x, n2.y);
+                ctx.stroke();
+            }
+        }
+
+        nodes.forEach(n => {
+            n.vx *= DAMPING;
+            n.vy *= DAMPING;
+            n.x += n.vx;
+            n.y += n.vy;
+
+            // NVセンター（電子スピン）
+            ctx.shadowBlur = 12;
+            ctx.shadowColor = "#ff00ff";
+            ctx.fillStyle = "#ff00ff";
+            ctx.beginPath();
+            ctx.arc(n.x, n.y, 7, 0, Math.PI*2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+            
+            // 境界の存在感
+            ctx.strokeStyle = "#fff";
+            ctx.strokeRect(n.x-4, n.y-4, 8, 8);
+        });
+
+        requestAnimationFrame(update);
+    }
+
+    init();
+    update();
+</script>
+</body>
+</html>
