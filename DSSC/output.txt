@@ -1,0 +1,244 @@
+
+==========
+== CUDA ==
+==========
+
+CUDA Version 12.4.1
+
+Container image Copyright (c) 2016-2023, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+This container image and its contents are governed by the NVIDIA Deep Learning Container License.
+By pulling and using the container, you accept the terms and conditions of this license:
+https://developer.nvidia.com/ngc/nvidia-deep-learning-container-license
+
+A copy of this license is made available in this container at /NGC-DL-CONTAINER-LICENSE for your convenience.
+
+  [OK] Using CuPy (GPU)
+=================================================================
+  PMNT L39 : 係数CとJ_inter設計上限の統一的理解
+=================================================================
+  N=8, s*=0.89, Gamma*=330.0MHz
+  USE_GPU=True
+
+Phase1：J_interスキャン（J_intra=1.0固定）
+   No  J_inter    λ2/λ1     理論margin         結果
+  --------------------------------------------------
+
+  [ 1/8] J_inter=0.03 λ2/λ1=0.797 理論=0.0157 (高λ2/λ1の挙動)
+  sigma=1.43e-04✓ (119.6s) margin=+0.1002 DETECTED
+
+  [ 2/8] J_inter=0.05 λ2/λ1=0.692 理論=0.0360 (L38P1再確認)
+  sigma=1.18e-04✓ (119.8s) margin=+0.0980 DETECTED
+
+  [ 3/8] J_inter=0.08 λ2/λ1=0.568 理論=0.0711 (L38P2再確認)
+  sigma=1.20e-04✓ (119.8s) margin=+0.0938 DETECTED
+
+  [ 4/8] J_inter=0.10 λ2/λ1=0.500 理論=0.0950 (基準ライン)
+  sigma=9.64e-05✓ (119.3s) margin=+0.0911 DETECTED
+
+  [ 5/8] J_inter=0.12 λ2/λ1=0.442 理論=0.1184 (効果B出始め？)
+  sigma=1.19e-04✓ (119.4s) margin=+0.0887 DETECTED
+
+  [ 6/8] J_inter=0.15 λ2/λ1=0.368 理論=0.1516 (設計上限付近)
+  sigma=1.40e-04✓ (119.5s) margin=+0.0875 DETECTED
+
+  [ 7/8] J_inter=0.20 λ2/λ1=0.273 理論=0.2010 (L38P4再確認)
+  sigma=7.97e-04✓ (119.7s) margin=+0.0830 DETECTED
+
+  [ 8/8] J_inter=0.30 λ2/λ1=0.143 理論=0.2792 (明らかに範囲外)
+  sigma=2.73e-04✓ (119.5s) margin=+0.0576 DETECTED
+
+
+Phase2：J_intraスキャン（J_inter=0.10固定）
+  効果Bを固定してC(λ2/λ1)の純粋な測定
+   No  J_intra    λ2/λ1         結果
+  ----------------------------------------
+
+  [ 1/3] J_intra=0.50 λ2/λ1=0.273 (λ2/λ1=0.273・効果B同じ)
+  sigma=6.80e-04✓ (119.8s) margin=+0.0715 DETECTED
+
+  [ 2/3] J_intra=1.00 λ2/λ1=0.500 (λ2/λ1=0.500・基準)
+  sigma=9.64e-05✓ (119.4s) margin=+0.0911 DETECTED
+
+  [ 3/3] J_intra=2.00 λ2/λ1=0.692 (λ2/λ1=0.692・効果B同じ)
+/app/L39_SIM.py:378: UserWarning: Glyph 22266 (\N{CJK UNIFIED IDEOGRAPH-56FA}) missing from font(s) DejaVu Sans.
+  plt.tight_layout()
+/app/L39_SIM.py:378: UserWarning: Glyph 23450 (\N{CJK UNIFIED IDEOGRAPH-5B9A}) missing from font(s) DejaVu Sans.
+  plt.tight_layout()
+/app/L39_SIM.py:378: UserWarning: Glyph 23455 (\N{CJK UNIFIED IDEOGRAPH-5B9F}) missing from font(s) DejaVu Sans.
+  plt.tight_layout()
+/app/L39_SIM.py:378: UserWarning: Glyph 28204 (\N{CJK UNIFIED IDEOGRAPH-6E2C}) missing from font(s) DejaVu Sans.
+  plt.tight_layout()
+/app/L39_SIM.py:378: UserWarning: Glyph 29702 (\N{CJK UNIFIED IDEOGRAPH-7406}) missing from font(s) DejaVu Sans.
+  plt.tight_layout()
+/app/L39_SIM.py:378: UserWarning: Glyph 35542 (\N{CJK UNIFIED IDEOGRAPH-8AD6}) missing from font(s) DejaVu Sans.
+  plt.tight_layout()
+/app/L39_SIM.py:378: UserWarning: Glyph 20104 (\N{CJK UNIFIED IDEOGRAPH-4E88}) missing from font(s) DejaVu Sans.
+  plt.tight_layout()
+/app/L39_SIM.py:378: UserWarning: Glyph 65288 (\N{FULLWIDTH LEFT PARENTHESIS}) missing from font(s) DejaVu Sans.
+  plt.tight_layout()
+/app/L39_SIM.py:378: UserWarning: Glyph 26377 (\N{CJK UNIFIED IDEOGRAPH-6709}) missing from font(s) DejaVu Sans.
+  plt.tight_layout()
+/app/L39_SIM.py:378: UserWarning: Glyph 20516 (\N{CJK UNIFIED IDEOGRAPH-5024}) missing from font(s) DejaVu Sans.
+  plt.tight_layout()
+/app/L39_SIM.py:378: UserWarning: Glyph 27604 (\N{CJK UNIFIED IDEOGRAPH-6BD4}) missing from font(s) DejaVu Sans.
+  plt.tight_layout()
+/app/L39_SIM.py:378: UserWarning: Glyph 65289 (\N{FULLWIDTH RIGHT PARENTHESIS}) missing from font(s) DejaVu Sans.
+  plt.tight_layout()
+/app/L39_SIM.py:378: UserWarning: Glyph 20418 (\N{CJK UNIFIED IDEOGRAPH-4FC2}) missing from font(s) DejaVu Sans.
+  plt.tight_layout()
+/app/L39_SIM.py:378: UserWarning: Glyph 25968 (\N{CJK UNIFIED IDEOGRAPH-6570}) missing from font(s) DejaVu Sans.
+  plt.tight_layout()
+/app/L39_SIM.py:378: UserWarning: Glyph 12398 (\N{HIRAGANA LETTER NO}) missing from font(s) DejaVu Sans.
+  plt.tight_layout()
+/app/L39_SIM.py:378: UserWarning: Glyph 20381 (\N{CJK UNIFIED IDEOGRAPH-4F9D}) missing from font(s) DejaVu Sans.
+  plt.tight_layout()
+/app/L39_SIM.py:378: UserWarning: Glyph 23384 (\N{CJK UNIFIED IDEOGRAPH-5B58}) missing from font(s) DejaVu Sans.
+  plt.tight_layout()
+/app/L39_SIM.py:378: UserWarning: Glyph 24615 (\N{CJK UNIFIED IDEOGRAPH-6027}) missing from font(s) DejaVu Sans.
+  plt.tight_layout()
+/app/L39_SIM.py:378: UserWarning: Glyph 21177 (\N{CJK UNIFIED IDEOGRAPH-52B9}) missing from font(s) DejaVu Sans.
+  plt.tight_layout()
+/app/L39_SIM.py:378: UserWarning: Glyph 26524 (\N{CJK UNIFIED IDEOGRAPH-679C}) missing from font(s) DejaVu Sans.
+  plt.tight_layout()
+/app/L39_SIM.py:378: UserWarning: Glyph 32020 (\N{CJK UNIFIED IDEOGRAPH-7D14}) missing from font(s) DejaVu Sans.
+  plt.tight_layout()
+/app/L39_SIM.py:378: UserWarning: Glyph 31883 (\N{CJK UNIFIED IDEOGRAPH-7C8B}) missing from font(s) DejaVu Sans.
+  plt.tight_layout()
+/app/L39_SIM.py:378: UserWarning: Glyph 27425 (\N{CJK UNIFIED IDEOGRAPH-6B21}) missing from font(s) DejaVu Sans.
+  plt.tight_layout()
+/app/L39_SIM.py:378: UserWarning: Glyph 25666 (\N{CJK UNIFIED IDEOGRAPH-6442}) missing from font(s) DejaVu Sans.
+  plt.tight_layout()
+/app/L39_SIM.py:378: UserWarning: Glyph 21205 (\N{CJK UNIFIED IDEOGRAPH-52D5}) missing from font(s) DejaVu Sans.
+  plt.tight_layout()
+/app/L39_SIM.py:378: UserWarning: Glyph 20840 (\N{CJK UNIFIED IDEOGRAPH-5168}) missing from font(s) DejaVu Sans.
+  plt.tight_layout()
+/app/L39_SIM.py:378: UserWarning: Glyph 12487 (\N{KATAKANA LETTER DE}) missing from font(s) DejaVu Sans.
+  plt.tight_layout()
+/app/L39_SIM.py:378: UserWarning: Glyph 12540 (\N{KATAKANA-HIRAGANA PROLONGED SOUND MARK}) missing from font(s) DejaVu Sans.
+  plt.tight_layout()
+/app/L39_SIM.py:378: UserWarning: Glyph 12479 (\N{KATAKANA LETTER TA}) missing from font(s) DejaVu Sans.
+  plt.tight_layout()
+/app/L39_SIM.py:378: UserWarning: Glyph 32113 (\N{CJK UNIFIED IDEOGRAPH-7D71}) missing from font(s) DejaVu Sans.
+  plt.tight_layout()
+/app/L39_SIM.py:378: UserWarning: Glyph 21512 (\N{CJK UNIFIED IDEOGRAPH-5408}) missing from font(s) DejaVu Sans.
+  plt.tight_layout()
+/app/L39_SIM.py:378: UserWarning: Glyph 12392 (\N{HIRAGANA LETTER TO}) missing from font(s) DejaVu Sans.
+  plt.tight_layout()
+/app/L39_SIM.py:378: UserWarning: Glyph 35373 (\N{CJK UNIFIED IDEOGRAPH-8A2D}) missing from font(s) DejaVu Sans.
+  plt.tight_layout()
+/app/L39_SIM.py:378: UserWarning: Glyph 35336 (\N{CJK UNIFIED IDEOGRAPH-8A08}) missing from font(s) DejaVu Sans.
+  plt.tight_layout()
+/app/L39_SIM.py:378: UserWarning: Glyph 19978 (\N{CJK UNIFIED IDEOGRAPH-4E0A}) missing from font(s) DejaVu Sans.
+  plt.tight_layout()
+/app/L39_SIM.py:378: UserWarning: Glyph 38480 (\N{CJK UNIFIED IDEOGRAPH-9650}) missing from font(s) DejaVu Sans.
+  plt.tight_layout()
+/app/L39_SIM.py:379: UserWarning: Glyph 22266 (\N{CJK UNIFIED IDEOGRAPH-56FA}) missing from font(s) DejaVu Sans.
+  plt.savefig(f'{out}/L39_Result.png',dpi=110,bbox_inches='tight')
+/app/L39_SIM.py:379: UserWarning: Glyph 23450 (\N{CJK UNIFIED IDEOGRAPH-5B9A}) missing from font(s) DejaVu Sans.
+  plt.savefig(f'{out}/L39_Result.png',dpi=110,bbox_inches='tight')
+/app/L39_SIM.py:379: UserWarning: Glyph 23455 (\N{CJK UNIFIED IDEOGRAPH-5B9F}) missing from font(s) DejaVu Sans.
+  plt.savefig(f'{out}/L39_Result.png',dpi=110,bbox_inches='tight')
+/app/L39_SIM.py:379: UserWarning: Glyph 28204 (\N{CJK UNIFIED IDEOGRAPH-6E2C}) missing from font(s) DejaVu Sans.
+  plt.savefig(f'{out}/L39_Result.png',dpi=110,bbox_inches='tight')
+/app/L39_SIM.py:379: UserWarning: Glyph 29702 (\N{CJK UNIFIED IDEOGRAPH-7406}) missing from font(s) DejaVu Sans.
+  plt.savefig(f'{out}/L39_Result.png',dpi=110,bbox_inches='tight')
+/app/L39_SIM.py:379: UserWarning: Glyph 35542 (\N{CJK UNIFIED IDEOGRAPH-8AD6}) missing from font(s) DejaVu Sans.
+  plt.savefig(f'{out}/L39_Result.png',dpi=110,bbox_inches='tight')
+/app/L39_SIM.py:379: UserWarning: Glyph 20104 (\N{CJK UNIFIED IDEOGRAPH-4E88}) missing from font(s) DejaVu Sans.
+  plt.savefig(f'{out}/L39_Result.png',dpi=110,bbox_inches='tight')
+/app/L39_SIM.py:379: UserWarning: Glyph 20418 (\N{CJK UNIFIED IDEOGRAPH-4FC2}) missing from font(s) DejaVu Sans.
+  plt.savefig(f'{out}/L39_Result.png',dpi=110,bbox_inches='tight')
+/app/L39_SIM.py:379: UserWarning: Glyph 25968 (\N{CJK UNIFIED IDEOGRAPH-6570}) missing from font(s) DejaVu Sans.
+  plt.savefig(f'{out}/L39_Result.png',dpi=110,bbox_inches='tight')
+/app/L39_SIM.py:379: UserWarning: Glyph 65288 (\N{FULLWIDTH LEFT PARENTHESIS}) missing from font(s) DejaVu Sans.
+  plt.savefig(f'{out}/L39_Result.png',dpi=110,bbox_inches='tight')
+/app/L39_SIM.py:379: UserWarning: Glyph 65289 (\N{FULLWIDTH RIGHT PARENTHESIS}) missing from font(s) DejaVu Sans.
+  plt.savefig(f'{out}/L39_Result.png',dpi=110,bbox_inches='tight')
+/app/L39_SIM.py:379: UserWarning: Glyph 12398 (\N{HIRAGANA LETTER NO}) missing from font(s) DejaVu Sans.
+  plt.savefig(f'{out}/L39_Result.png',dpi=110,bbox_inches='tight')
+/app/L39_SIM.py:379: UserWarning: Glyph 20381 (\N{CJK UNIFIED IDEOGRAPH-4F9D}) missing from font(s) DejaVu Sans.
+  plt.savefig(f'{out}/L39_Result.png',dpi=110,bbox_inches='tight')
+/app/L39_SIM.py:379: UserWarning: Glyph 23384 (\N{CJK UNIFIED IDEOGRAPH-5B58}) missing from font(s) DejaVu Sans.
+  plt.savefig(f'{out}/L39_Result.png',dpi=110,bbox_inches='tight')
+/app/L39_SIM.py:379: UserWarning: Glyph 24615 (\N{CJK UNIFIED IDEOGRAPH-6027}) missing from font(s) DejaVu Sans.
+  plt.savefig(f'{out}/L39_Result.png',dpi=110,bbox_inches='tight')
+/app/L39_SIM.py:379: UserWarning: Glyph 21177 (\N{CJK UNIFIED IDEOGRAPH-52B9}) missing from font(s) DejaVu Sans.
+  plt.savefig(f'{out}/L39_Result.png',dpi=110,bbox_inches='tight')
+/app/L39_SIM.py:379: UserWarning: Glyph 26524 (\N{CJK UNIFIED IDEOGRAPH-679C}) missing from font(s) DejaVu Sans.
+  plt.savefig(f'{out}/L39_Result.png',dpi=110,bbox_inches='tight')
+/app/L39_SIM.py:379: UserWarning: Glyph 32020 (\N{CJK UNIFIED IDEOGRAPH-7D14}) missing from font(s) DejaVu Sans.
+  plt.savefig(f'{out}/L39_Result.png',dpi=110,bbox_inches='tight')
+/app/L39_SIM.py:379: UserWarning: Glyph 31883 (\N{CJK UNIFIED IDEOGRAPH-7C8B}) missing from font(s) DejaVu Sans.
+  plt.savefig(f'{out}/L39_Result.png',dpi=110,bbox_inches='tight')
+/app/L39_SIM.py:379: UserWarning: Glyph 26377 (\N{CJK UNIFIED IDEOGRAPH-6709}) missing from font(s) DejaVu Sans.
+  plt.savefig(f'{out}/L39_Result.png',dpi=110,bbox_inches='tight')
+/app/L39_SIM.py:379: UserWarning: Glyph 20516 (\N{CJK UNIFIED IDEOGRAPH-5024}) missing from font(s) DejaVu Sans.
+  plt.savefig(f'{out}/L39_Result.png',dpi=110,bbox_inches='tight')
+/app/L39_SIM.py:379: UserWarning: Glyph 27604 (\N{CJK UNIFIED IDEOGRAPH-6BD4}) missing from font(s) DejaVu Sans.
+  plt.savefig(f'{out}/L39_Result.png',dpi=110,bbox_inches='tight')
+/app/L39_SIM.py:379: UserWarning: Glyph 27425 (\N{CJK UNIFIED IDEOGRAPH-6B21}) missing from font(s) DejaVu Sans.
+  plt.savefig(f'{out}/L39_Result.png',dpi=110,bbox_inches='tight')
+/app/L39_SIM.py:379: UserWarning: Glyph 25666 (\N{CJK UNIFIED IDEOGRAPH-6442}) missing from font(s) DejaVu Sans.
+  plt.savefig(f'{out}/L39_Result.png',dpi=110,bbox_inches='tight')
+/app/L39_SIM.py:379: UserWarning: Glyph 21205 (\N{CJK UNIFIED IDEOGRAPH-52D5}) missing from font(s) DejaVu Sans.
+  plt.savefig(f'{out}/L39_Result.png',dpi=110,bbox_inches='tight')
+/app/L39_SIM.py:379: UserWarning: Glyph 20840 (\N{CJK UNIFIED IDEOGRAPH-5168}) missing from font(s) DejaVu Sans.
+  plt.savefig(f'{out}/L39_Result.png',dpi=110,bbox_inches='tight')
+/app/L39_SIM.py:379: UserWarning: Glyph 12487 (\N{KATAKANA LETTER DE}) missing from font(s) DejaVu Sans.
+  plt.savefig(f'{out}/L39_Result.png',dpi=110,bbox_inches='tight')
+/app/L39_SIM.py:379: UserWarning: Glyph 12540 (\N{KATAKANA-HIRAGANA PROLONGED SOUND MARK}) missing from font(s) DejaVu Sans.
+  plt.savefig(f'{out}/L39_Result.png',dpi=110,bbox_inches='tight')
+/app/L39_SIM.py:379: UserWarning: Glyph 12479 (\N{KATAKANA LETTER TA}) missing from font(s) DejaVu Sans.
+  plt.savefig(f'{out}/L39_Result.png',dpi=110,bbox_inches='tight')
+/app/L39_SIM.py:379: UserWarning: Glyph 32113 (\N{CJK UNIFIED IDEOGRAPH-7D71}) missing from font(s) DejaVu Sans.
+  plt.savefig(f'{out}/L39_Result.png',dpi=110,bbox_inches='tight')
+/app/L39_SIM.py:379: UserWarning: Glyph 21512 (\N{CJK UNIFIED IDEOGRAPH-5408}) missing from font(s) DejaVu Sans.
+  plt.savefig(f'{out}/L39_Result.png',dpi=110,bbox_inches='tight')
+/app/L39_SIM.py:379: UserWarning: Glyph 12392 (\N{HIRAGANA LETTER TO}) missing from font(s) DejaVu Sans.
+  plt.savefig(f'{out}/L39_Result.png',dpi=110,bbox_inches='tight')
+/app/L39_SIM.py:379: UserWarning: Glyph 35373 (\N{CJK UNIFIED IDEOGRAPH-8A2D}) missing from font(s) DejaVu Sans.
+  plt.savefig(f'{out}/L39_Result.png',dpi=110,bbox_inches='tight')
+/app/L39_SIM.py:379: UserWarning: Glyph 35336 (\N{CJK UNIFIED IDEOGRAPH-8A08}) missing from font(s) DejaVu Sans.
+  plt.savefig(f'{out}/L39_Result.png',dpi=110,bbox_inches='tight')
+/app/L39_SIM.py:379: UserWarning: Glyph 19978 (\N{CJK UNIFIED IDEOGRAPH-4E0A}) missing from font(s) DejaVu Sans.
+  plt.savefig(f'{out}/L39_Result.png',dpi=110,bbox_inches='tight')
+/app/L39_SIM.py:379: UserWarning: Glyph 38480 (\N{CJK UNIFIED IDEOGRAPH-9650}) missing from font(s) DejaVu Sans.
+  plt.savefig(f'{out}/L39_Result.png',dpi=110,bbox_inches='tight')
+  sigma=1.75e-04✓ (119.5s) margin=+0.0697 DETECTED
+
+=================================================================
+  L39 Phase1 結果サマリー
+=================================================================
+   J_inter    λ2/λ1   margin      C実測      sigma
+  --------------------------------------------------
+      0.03    0.797  +0.1002    2.421 1.43e-04✓
+      0.05    0.692  +0.0980    1.035 1.18e-04✓
+      0.08    0.568  +0.0938    0.502 1.20e-04✓
+      0.10    0.500  +0.0911    0.364 9.64e-05✓
+      0.12    0.442  +0.0887    0.285 1.19e-04✓
+      0.15    0.368  +0.0875    0.219 1.40e-04✓
+      0.20    0.273  +0.0830    0.157 7.97e-04✓
+      0.30    0.143  +0.0576    0.078 2.73e-04✓
+
+  marginピーク: J_inter=0.03 margin=0.1002
+  → J_inter設計上限の推定値：0.03
+
+=================================================================
+  L39 Phase2 結果サマリー（C(λ2/λ1)の純粋測定）
+=================================================================
+   J_intra  J_inter    λ2/λ1   margin      C実測
+  --------------------------------------------------
+      0.50     0.10    0.273  +0.0715    0.135
+      1.00     0.10    0.500  +0.0911    0.364
+      2.00     0.10    0.692  +0.0697    0.736
+
+  C(λ2/λ1)の傾向（Phase2）：
+    λ2/λ1=0.273: C=0.135
+    λ2/λ1=0.500: C=0.364
+    λ2/λ1=0.692: C=0.736
+
+  PNG: /app/L39_Result.png
+  JSON: /app/L39_results.json
+
+  完了！
