@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>L38 Phase2 設計仕様書</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #0a0a0f;
+  --panel: #12121a;
+  --border: #1e1e2e;
+  --l1: #ff4d6d;
+  --l2: #4dffb4;
+  --accent: #ffd700;
+  --text: #e0e0f0;
+  --muted: #606080;
+  --ok: #4dffb4;
+  --ng: #ff6b6b;
+  --warn: #ffaa00;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Space Grotesk', sans-serif;
+  padding: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 6px;
+}
+h1 span { color: var(--l2); }
+.subtitle {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-bottom: 40px;
+}
+h2 {
+  font-size: 1.0rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 36px 0 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+h3 {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 20px 0 10px;
+}
+p { font-size: 0.88rem; color: #b0b0c8; margin-bottom: 10px; }
+
+/* Knowledge box */
+.knowledge {
+  background: #0d1020;
+  border: 1px solid #2a2a4a;
+  border-left: 3px solid var(--accent);
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+}
+.knowledge .k-title {
+  font-size: 0.72rem;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+.knowledge .k-row {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.knowledge .k-item {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+}
+.knowledge .k-item .kl { color: var(--muted); }
+.knowledge .k-item .kv { color: #fff; font-weight: 700; }
+.ok { color: var(--ok); }
+.ng { color: var(--ng); }
+.warn { color: var(--warn); }
+
+/* Pattern grid */
+.patterns {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin: 20px 0;
+}
+.pattern-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  position: relative;
+}
+.pattern-card.target {
+  border-color: var(--accent);
+  box-shadow: 0 0 20px rgba(255,215,0,0.1);
+}
+.pattern-card.baseline {
+  border-color: #2a3a2a;
+}
+.pattern-card .p-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.05em;
+}
+.badge-target { background: rgba(255,215,0,0.15); color: var(--accent); border: 1px solid rgba(255,215,0,0.3); }
+.badge-baseline { background: rgba(77,255,180,0.1); color: var(--ok); border: 1px solid rgba(77,255,180,0.2); }
+.badge-fail { background: rgba(255,107,107,0.1); color: var(--ng); border: 1px solid rgba(255,107,107,0.2); }
+
+.p-name {
+  font-size: 1.0rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: #fff;
+}
+.p-desc { font-size: 0.78rem; color: var(--muted); margin-bottom: 16px; }
+.p-params {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  background: #0d0d18;
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+}
+.p-params .row { display: flex; justify-content: space-between; padding: 2px 0; }
+.p-params .pk { color: var(--muted); }
+.p-params .pv { color: #fff; font-weight: 700; }
+.p-predict {
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 6px;
+  text-align: center;
+}
+.predict-ok { background: rgba(77,255,180,0.1); color: var(--ok); }
+.predict-ng { background: rgba(255,107,107,0.1); color: var(--ng); }
+.predict-edge { background: rgba(255,215,0,0.1); color: var(--accent); }
+
+/* NV Layout diagram */
+.layout-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin: 20px 0;
+}
+.layout-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+}
+.layout-card.target { border-color: var(--accent); }
+.layout-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 12px;
+}
+
+/* Judgement table */
+.judge-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  margin: 16px 0;
+}
+.judge-table th {
+  background: #0d0d18;
+  padding: 10px 14px;
+  text-align: left;
+  color: var(--muted);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+}
+.judge-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+}
+.judge-table tr:hover td { background: #151525; }
+.judge-table .key-row td { background: rgba(255,215,0,0.05); }
+
+/* flow */
+.flow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+.flow-step {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 0.8rem;
+  flex: 1;
+  min-width: 160px;
+}
+.flow-step .fs-num {
+  font-size: 0.68rem;
+  color: var(--accent);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.flow-arrow { color: var(--muted); font-size: 1.2rem; }
+
+/* conclusion */
+.conclusion {
+  background: linear-gradient(135deg, #0d1020, #0d200d);
+  border: 1px solid #2a3a2a;
+  border-radius: 12px;
+  padding: 24px;
+  margin-top: 32px;
+}
+.conclusion h3 { color: var(--ok); margin-top: 0; }
+.mono {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  line-height: 1.8;
+  color: #b0f0c8;
+}
+</style>
+</head>
+<body>
+
+<h1>L38 <span>Phase 2</span> 設計仕様書</h1>
+<div class="subtitle">固有値逆設計によるε_c定量化と配置設計原則の確立 | 2026年3月</div>
+
+<!-- 既存の知見 -->
+<h2>1. L38 Phase1からの知見（確定済み）</h2>
+
+<div class="knowledge">
+  <div class="k-title">確定した事実</div>
+  <div class="k-row">
+    <div class="k-item"><span class="kl">動作範囲 </span><span class="kv">s = 0.880 〜 0.970（sigma✓）</span></div>
+    <div class="k-item"><span class="kl">λ2/λ1=0.800（L37_C）</span><span class="kv ng"> → 検出不可</span></div>
+    <div class="k-item"><span class="kl">λ2/λ1=0.571（N=6）</span><span class="kv ok"> → 検出可能</span></div>
+    <div class="k-item"><span class="kl">ε_cの範囲 </span><span class="kv warn">0.571 ≦ ε_c ＜ 0.800</span></div>
+  </div>
+</div>
+
+<div class="knowledge">
+  <div class="k-title">重要な発見：J値と固有値比は別物</div>
+  <div class="k-row">
+    <div class="k-item"><span class="kl">L37_C J_layer2=0.4 </span><span class="kv">→ 固有値比λ2/λ1=0.800（検出不可）</span></div>
+    <div class="k-item"><span class="kl">L37_A J_inter=0.10 </span><span class="kv">→ 固有値比λ2/λ1=0.500（検出可能）</span></div>
+    <div class="k-item"><span class="kl">設計原則 </span><span class="kv ok">固有値比を計算してから配置を決める</span></div>
+  </div>
+</div>
+
+<!-- Phase2の目的 -->
+<h2>2. Phase2の目的</h2>
+
+<div class="flow">
+  <div class="flow-step">
+    <div class="fs-num">目的①</div>
+    ε_cの正確な値を定量化<br>
+    <span class="warn" style="font-size:0.75rem">0.571 〜 0.800のどこか</span>
+  </div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step">
+    <div class="fs-num">目的②</div>
+    固有値比から検出可否を<br>事前予測できることを実証
+  </div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step">
+    <div class="fs-num">目的③</div>
+    「DSSCで解ける問題」の<br>設計原則を確立
+  </div>
+</div>
+
+<!-- 4パターンの配置設計 -->
+<h2>3. 実験パターン設計（4配置）</h2>
+<p>全パターンN=8、4複合体構造{A,B},{C,D},{E,F},{G,H}。J_intra=1.0固定でJ_interを変化させることで固有値比を制御する。</p>
+
+<div class="patterns">
+
+  <!-- Pattern1 -->
+  <div class="pattern-card">
+    <span class="p-badge badge-fail">FAIL予測</span>
+    <div class="p-name">Pattern 1</div>
+    <div class="p-desc">ε_c境界の下側（検出不可を確認）</div>
+    <div class="p-params">
+      <div class="row"><span class="pk">J_intra</span><span class="pv">1.00</span></div>
+      <div class="row"><span class="pk">J_inter</span><span class="pv ng">0.05</span></div>
+      <div class="row"><span class="pk">λ1</span><span class="pv">1.300</span></div>
+      <div class="row"><span class="pk">λ2</span><span class="pv">0.900</span></div>
+      <div class="row"><span class="pk">λ2/λ1</span><span class="pv ng">0.692（＞ε_c）</span></div>
+    </div>
+    <div class="p-predict predict-ng">✗ 検出不可（予測）</div>
+  </div>
+
+  <!-- Pattern2 -->
+  <div class="pattern-card target">
+    <span class="p-badge badge-target">★ ε_c境界</span>
+    <div class="p-name">Pattern 2</div>
+    <div class="p-desc">ε_cすれすれ（最も精度よくε_cを定量化）</div>
+    <div class="p-params">
+      <div class="row"><span class="pk">J_intra</span><span class="pv">1.00</span></div>
+      <div class="row"><span class="pk">J_inter</span><span class="pv warn">0.08</span></div>
+      <div class="row"><span class="pk">λ1</span><span class="pv">1.480</span></div>
+      <div class="row"><span class="pk">λ2</span><span class="pv">0.840</span></div>
+      <div class="row"><span class="pk">λ2/λ1</span><span class="pv warn">0.568（≈ε_c）</span></div>
+    </div>
+    <div class="p-predict predict-edge">△ ε_c境界（要実測）</div>
+  </div>
+
+  <!-- Pattern3 -->
+  <div class="pattern-card baseline">
+    <span class="p-badge badge-baseline">実績あり</span>
+    <div class="p-name">Pattern 3</div>
+    <div class="p-desc">L37_A実績値（基準ライン）</div>
+    <div class="p-params">
+      <div class="row"><span class="pk">J_intra</span><span class="pv">1.00</span></div>
+      <div class="row"><span class="pk">J_inter</span><span class="pv ok">0.10</span></div>
+      <div class="row"><span class="pk">λ1</span><span class="pv">1.600</span></div>
+      <div class="row"><span class="pk">λ2</span><span class="pv">0.800</span></div>
+      <div class="row"><span class="pk">λ2/λ1</span><span class="pv ok">0.500（＜ε_c）</span></div>
+    </div>
+    <div class="p-predict predict-ok">✓ 検出可能（L37_A実績）</div>
+  </div>
+
+  <!-- Pattern4 -->
+  <div class="pattern-card">
+    <span class="p-badge badge-baseline">余裕あり</span>
+    <div class="p-name">Pattern 4</div>
+    <div class="p-desc">ε_cから十分離れた余裕配置</div>
+    <div class="p-params">
+      <div class="row"><span class="pk">J_intra</span><span class="pv">1.00</span></div>
+      <div class="row"><span class="pk">J_inter</span><span class="pv ok">0.20</span></div>
+      <div class="row"><span class="pk">λ1</span><span class="pv">2.200</span></div>
+      <div class="row"><span class="pk">λ2</span><span class="pv">0.600</span></div>
+      <div class="row"><span class="pk">λ2/λ1</span><span class="pv ok">0.273（＜＜ε_c）</span></div>
+    </div>
+    <div class="p-predict predict-ok">✓ 検出可能（予測）</div>
+  </div>
+
+</div>
+
+<!-- 配置図 -->
+<h2>4. NV配置図</h2>
+<p>全パターン共通の物理配置。J_intra（複合体内）とJ_inter（複合体間）の値だけが異なる。</p>
+
+<div class="layout-grid">
+  <!-- 配置図1：全体構造 -->
+  <div class="layout-card target">
+    <div class="layout-title">全パターン共通配置（N=8）</div>
+    <canvas id="layout-main" width="380" height="280"></canvas>
+  </div>
+
+  <!-- 配置図2：固有値比の比較 -->
+  <div class="layout-card">
+    <div class="layout-title">固有値比 λ2/λ1 の比較</div>
+    <canvas id="eig-chart" width="380" height="280"></canvas>
+  </div>
+</div>
+
+<!-- 判定基準 -->
+<h2>5. 判定基準</h2>
+
+<table class="judge-table">
+  <thead>
+    <tr>
+      <th>パターン</th>
+      <th>λ2/λ1</th>
+      <th>成功条件</th>
+      <th>Phase2での役割</th>
+      <th>期待判定</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Pattern 1 (J_inter=0.05)</td>
+      <td class="ng">0.692</td>
+      <td>margin &gt; 0</td>
+      <td>ε_c上限の確認</td>
+      <td class="ng">FAIL</td>
+    </tr>
+    <tr class="key-row">
+      <td>Pattern 2 (J_inter=0.08) ★</td>
+      <td class="warn">0.568</td>
+      <td>margin &gt; 0</td>
+      <td><strong>ε_cの正確な値を決定</strong></td>
+      <td class="warn">要実測</td>
+    </tr>
+    <tr>
+      <td>Pattern 3 (J_inter=0.10)</td>
+      <td class="ok">0.500</td>
+      <td>margin &gt; 0</td>
+      <td>基準ライン（実績確認）</td>
+      <td class="ok">DETECTED</td>
+    </tr>
+    <tr>
+      <td>Pattern 4 (J_inter=0.20)</td>
+      <td class="ok">0.273</td>
+      <td>margin &gt; 0</td>
+      <td>余裕配置の確認</td>
+      <td class="ok">DETECTED</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>ε_cの確定ロジック</h3>
+<div class="knowledge">
+  <div class="k-title">判定フロー</div>
+  <div class="mono">
+Pattern2 DETECTED → ε_c ∈ (0.568, 0.692)  → さらにJ_inter=0.06で絞り込み可<br>
+Pattern2 FAIL     → ε_c ∈ (0.500, 0.568)  → L37_A(0.500)が下限に近い<br>
+Pattern3 FAIL     → ε_c ＜ 0.500          → 設計原則の大幅見直し（可能性低）
+  </div>
+</div>
+
+<!-- 設計原則 -->
+<h2>6. 確立される設計原則</h2>
+
+<div class="flow">
+  <div class="flow-step">
+    <div class="fs-num">Step 1</div>
+    解きたい問題の<br>J_{ij}行列を設定
+  </div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step">
+    <div class="fs-num">Step 2</div>
+    固有値分解で<br>λ2/λ1を計算<br><span style="font-size:0.72rem;color:var(--muted)">O(N³)だが1回だけ</span>
+  </div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step">
+    <div class="fs-num">Step 3</div>
+    λ2/λ1 ＜ ε_c？<br><span class="ok">YES→DSSCで解ける</span><br><span class="ng">NO→配置を変える</span>
+  </div>
+  <div class="flow-arrow">→</div>
+  <div class="flow-step">
+    <div class="fs-num">Step 4</div>
+    DSSCを実行<br>s*=0.890で読み出し
+  </div>
+</div>
+
+<!-- 計算コスト -->
+<h2>7. 計算コスト見積もり（高火力DOK）</h2>
+
+<table class="judge-table">
+  <thead>
+    <tr><th>項目</th><th>値</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>パターン数</td><td>4パターン</td></tr>
+    <tr><td>1パターンの計算時間</td><td>約2分（V100 GPU）</td></tr>
+    <tr><td>合計時間</td><td>約8分</td></tr>
+    <tr><td>費用</td><td>約8円（V100: 0.016円/秒）</td></tr>
+    <tr><td>実行方法</td><td>高火力DOK V100プラン</td></tr>
+  </tbody>
+</table>
+
+<!-- Conclusion -->
+<div class="conclusion">
+  <h3>Phase2完了後に確定すること</h3>
+  <div class="mono">
+① ε_c の正確な値（0.571〜0.800の範囲内）<br>
+② 「λ2/λ1 ＜ ε_c なら検出可能」の実験的証明<br>
+③ DSSCの配置設計原則：<br>
+   「固有値比を計算→ε_cと比較→配置の可否を決定」<br>
+④ 「解ける問題とは」の定量的定義：<br>
+   J_{ij}行列の λ2/λ1 ＜ ε_c を満たす問題
+  </div>
+</div>
+
+<script>
+// ── 配置図 ───────────────────────────────────────────────
+const canvas = document.getElementById('layout-main');
+const ctx = canvas.getContext('2d');
+const dpr = window.devicePixelRatio || 1;
+canvas.width  = 380 * dpr;
+canvas.height = 280 * dpr;
+canvas.style.width  = '380px';
+canvas.style.height = '280px';
+ctx.scale(dpr, dpr);
+
+const W = 380, H = 280;
+const cx = W/2, cy = H/2 - 10;
+const R = 100;
+const names = ['A','B','C','D','E','F','G','H'];
+// 4複合体を視覚的に分けて配置
+// {A,B}=左上、{C,D}=右上、{E,F}=右下、{G,H}=左下
+const pos = [
+  {x:cx-70, y:cy-70},  // A
+  {x:cx-30, y:cy-70},  // B
+  {x:cx+30, y:cy-70},  // C
+  {x:cx+70, y:cy-70},  // D
+  {x:cx+70, y:cy+70},  // E （右下）
+  {x:cx+30, y:cy+70},  // F
+  {x:cx-30, y:cy+70},  // G （左下）
+  {x:cx-70, y:cy+70},  // H
+];
+const PAIRS_INTRA = [[0,1],[2,3],[4,5],[6,7]];
+const COLORS = ['#ff4d6d','#ff4d6d','#4d9fff','#4d9fff',
+                '#ffd700','#ffd700','#4dffb4','#4dffb4'];
+
+// 複合体の背景
+const groups = [[0,1],[2,3],[4,5],[6,7]];
+const gcols = ['rgba(255,77,109,0.1)','rgba(77,159,255,0.1)',
+               'rgba(255,215,0,0.1)','rgba(77,255,180,0.1)'];
+const gbcols = ['rgba(255,77,109,0.3)','rgba(77,159,255,0.3)',
+                'rgba(255,215,0,0.3)','rgba(77,255,180,0.3)'];
+groups.forEach((g,gi) => {
+  const xs = g.map(i=>pos[i].x), ys = g.map(i=>pos[i].y);
+  const mx = (xs[0]+xs[1])/2, my = (ys[0]+ys[1])/2;
+  ctx.beginPath();
+  ctx.ellipse(mx, my, 45, 28, 0, 0, Math.PI*2);
+  ctx.fillStyle = gcols[gi];
+  ctx.fill();
+  ctx.strokeStyle = gbcols[gi];
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+});
+
+// Inter connections（薄く）
+for(let i=0;i<8;i++){
+  for(let j=i+1;j<8;j++){
+    if(PAIRS_INTRA.some(([a,b])=>a===i&&b===j)) continue;
+    ctx.beginPath();
+    ctx.moveTo(pos[i].x, pos[i].y);
+    ctx.lineTo(pos[j].x, pos[j].y);
+    ctx.strokeStyle = 'rgba(100,100,180,0.15)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3,3]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+}
+
+// Intra connections（太く）
+PAIRS_INTRA.forEach(([i,j]) => {
+  ctx.beginPath();
+  ctx.moveTo(pos[i].x, pos[i].y);
+  ctx.lineTo(pos[j].x, pos[j].y);
+  ctx.strokeStyle = '#ff4d6d';
+  ctx.lineWidth = 4;
+  ctx.stroke();
+});
+
+// Nodes
+names.forEach((n,i) => {
+  const p = pos[i];
+  ctx.beginPath();
+  ctx.arc(p.x, p.y, 14, 0, Math.PI*2);
+  ctx.fillStyle = COLORS[i];
+  ctx.fill();
+  ctx.fillStyle = '#000';
+  ctx.font = 'bold 12px Space Grotesk';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(n, p.x, p.y);
+});
+
+// 凡例
+ctx.font = '11px JetBrains Mono';
+ctx.textAlign = 'left';
+ctx.fillStyle = '#ff4d6d';
+ctx.fillRect(10, H-50, 16, 4);
+ctx.fillStyle = '#e0e0f0';
+ctx.fillText('J_intra（複合体内）', 32, H-44);
+ctx.strokeStyle = 'rgba(100,100,180,0.4)';
+ctx.setLineDash([3,3]);
+ctx.beginPath(); ctx.moveTo(10,H-28); ctx.lineTo(26,H-28); ctx.stroke();
+ctx.setLineDash([]);
+ctx.fillStyle = '#e0e0f0';
+ctx.fillText('J_inter（複合体間）', 32, H-24);
+
+// ── 固有値比チャート ─────────────────────────────────────
+const ec = document.getElementById('eig-chart');
+const ectx = ec.getContext('2d');
+ec.width  = 380 * dpr;
+ec.height = 280 * dpr;
+ec.style.width  = '380px';
+ec.style.height = '280px';
+ectx.scale(dpr, dpr);
+
+const patterns = [
+  {name:'P1\n(0.05)', ratio:0.692, color:'#ff6b6b', ok:false},
+  {name:'P2★\n(0.08)', ratio:0.568, color:'#ffd700', ok:null},
+  {name:'P3\n(0.10)', ratio:0.500, color:'#4dffb4', ok:true},
+  {name:'P4\n(0.20)', ratio:0.273, color:'#4dffb4', ok:true},
+];
+
+const pw = 380, ph = 280;
+const pad = {l:50, r:20, t:20, b:60};
+const bw = (pw-pad.l-pad.r)/patterns.length - 12;
+
+// Grid
+ectx.strokeStyle = '#1e1e2e';
+ectx.lineWidth = 1;
+[0, 0.2, 0.4, 0.6, 0.8, 1.0].forEach(v => {
+  const y = pad.t + (ph-pad.t-pad.b)*(1-v);
+  ectx.beginPath();
+  ectx.moveTo(pad.l, y); ectx.lineTo(pw-pad.r, y);
+  ectx.stroke();
+  ectx.fillStyle = '#404060';
+  ectx.font = '10px JetBrains Mono';
+  ectx.textAlign = 'right';
+  ectx.fillText(v.toFixed(1), pad.l-5, y+4);
+});
+
+// ε_c range
+const yEcLow = pad.t + (ph-pad.t-pad.b)*(1-0.571);
+const yEcHigh = pad.t + (ph-pad.t-pad.b)*(1-0.800);
+ectx.fillStyle = 'rgba(255,215,0,0.08)';
+ectx.fillRect(pad.l, yEcHigh, pw-pad.l-pad.r, yEcLow-yEcHigh);
+ectx.strokeStyle = 'rgba(255,215,0,0.5)';
+ectx.setLineDash([4,4]);
+ectx.lineWidth = 1.5;
+[yEcLow, yEcHigh].forEach(y => {
+  ectx.beginPath(); ectx.moveTo(pad.l,y); ectx.lineTo(pw-pad.r,y); ectx.stroke();
+});
+ectx.setLineDash([]);
+ectx.fillStyle = 'rgba(255,215,0,0.8)';
+ectx.font = '10px Space Grotesk';
+ectx.textAlign = 'right';
+ectx.fillText('ε_c範囲', pw-pad.r-2, (yEcLow+yEcHigh)/2+4);
+
+// Bars
+patterns.forEach((p, i) => {
+  const x = pad.l + i * ((pw-pad.l-pad.r)/patterns.length) + 6;
+  const barH = (ph-pad.t-pad.b) * p.ratio;
+  const y = ph - pad.b - barH;
+
+  // bar
+  const grad = ectx.createLinearGradient(0, y, 0, ph-pad.b);
+  grad.addColorStop(0, p.color);
+  grad.addColorStop(1, p.color+'44');
+  ectx.fillStyle = grad;
+  ectx.fillRect(x, y, bw, barH);
+
+  // value
+  ectx.fillStyle = '#fff';
+  ectx.font = 'bold 11px JetBrains Mono';
+  ectx.textAlign = 'center';
+  ectx.fillText(p.ratio.toFixed(3), x+bw/2, y-8);
+
+  // label
+  ectx.fillStyle = '#b0b0c8';
+  ectx.font = '10px Space Grotesk';
+  const lines = p.name.split('\n');
+  lines.forEach((l, li) => {
+    ectx.fillText(l, x+bw/2, ph-pad.b+14+li*13);
+  });
+
+  // ok/ng icon
+  ectx.font = 'bold 13px Space Grotesk';
+  ectx.fillStyle = p.ok===true?'#4dffb4':p.ok===false?'#ff6b6b':'#ffd700';
+  ectx.fillText(p.ok===true?'✓':p.ok===false?'✗':'?', x+bw/2, y-22);
+});
+
+// y-axis label
+ectx.save();
+ectx.translate(14, ph/2);
+ectx.rotate(-Math.PI/2);
+ectx.fillStyle = '#606080';
+ectx.font = '10px Space Grotesk';
+ectx.textAlign = 'center';
+ectx.fillText('λ2/λ1', 0, 0);
+ectx.restore();
+</script>
+</body>
+</html>
